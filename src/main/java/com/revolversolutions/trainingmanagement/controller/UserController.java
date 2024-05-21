@@ -3,20 +3,20 @@ package com.revolversolutions.trainingmanagement.controller;
 
 import com.revolversolutions.trainingmanagement.dto.UserRequest;
 import com.revolversolutions.trainingmanagement.dto.UserResponse;
+import com.revolversolutions.trainingmanagement.entity.User;
 import com.revolversolutions.trainingmanagement.service.UserService;
 import jakarta.validation.Valid;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.font.MultipleMaster;
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -95,6 +95,16 @@ public class UserController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> authenticatedUser(){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User currentUser = (User) authentication.getPrincipal();
+        UserResponse userResponse = userService.getUserById(currentUser.getUserId());
+        return ResponseEntity.ok(userResponse);
     }
 
 

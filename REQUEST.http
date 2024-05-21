@@ -21,18 +21,19 @@ Content-Type: application/json
 }
 
 
-
-
-
 ###
 
 GET http://localhost:8080/api/v1/user
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5YWFzaGFsbCIsImlhdCI6MTcxNjA3NzIzMywiZXhwIjoxNzE2MTYzNjMzfQ.MrGoLaP3iqTrx2R0JE-e77iT5oM2ySzquK7Dn7GCOAAENcok6UCkqF9LwETv3uVu
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5YWFzaGFsbCIsImlhdCI6MTcxNjIzMzc3MywiZXhwIjoxNzE2MzIwMTczfQ.IBNVVprP4wmKoQb6VRjMWGrpFttluq5B7_uGrlUU34_iL08i5FTt6OOG89bZG9EX
 
 
 
 ###
 
 POST http://localhost:8080/auth/logout
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5YWFzaGFsbCIsImlhdCI6MTcxNjA3NzM2NCwiZXhwIjoxNzE2MTYzNzY0fQ.6_KfipQjTGtZw11JDKEOhnKbK1uXgr4c3WfrYdZQjP5E35zJPDIVbRd3Zem-8R_m
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5YWFzaGFsbCIsImlhdCI6MTcxNjIzMzc3MywiZXhwIjoxNzE2MzIwMTczfQ.IBNVVprP4wmKoQb6VRjMWGrpFttluq5B7_uGrlUU34_iL08i5FTt6OOG89bZG9EX
 
+###
+
+GET http://localhost:8080/api/v1/user/me
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5YWFzaGFsbCIsImlhdCI6MTcxNjIzMzc3MywiZXhwIjoxNzE2MzIwMTczfQ.IBNVVprP4wmKoQb6VRjMWGrpFttluq5B7_uGrlUU34_iL08i5FTt6OOG89bZG9EX

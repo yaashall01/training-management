@@ -4,7 +4,6 @@ package com.revolversolutions.trainingmanagement.serviceImpl;
 import com.revolversolutions.trainingmanagement.dto.AuthenticationResponse;
 import com.revolversolutions.trainingmanagement.dto.LoginUserDto;
 import com.revolversolutions.trainingmanagement.dto.RegisterUserDto;
-import com.revolversolutions.trainingmanagement.dto.UserRequest;
 import com.revolversolutions.trainingmanagement.entity.Token;
 import com.revolversolutions.trainingmanagement.entity.User;
 import com.revolversolutions.trainingmanagement.enums.UserRole;

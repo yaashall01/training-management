@@ -51,13 +51,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(h->h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(
-                        req -> req//.requestMatchers("/auth/**", "/refresh_token/**", "/confirm-account/**", "/swagger-ui/index.html/**", "/v3/api-docs")
-                                .requestMatchers("**")
+                        req -> req.requestMatchers("/","/auth/**", "/refresh_token/**", "/confirm-account/**", "/swagger-ui/index.html/**", "/v3/api-docs")
+                                //.requestMatchers("**")
                                 .permitAll()
-                                .requestMatchers("/admin_only/**").hasAuthority("ADMIN")
-                                .anyRequest()
-                                .authenticated()
-                ).userDetailsService(userService)
+                )
+                .authorizeHttpRequests(ar -> ar.requestMatchers("/admin_only/**").hasAuthority("ADMIN")
+                        .anyRequest().authenticated()
+                )
+                .userDetailsService(userService)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -71,6 +72,7 @@ public class SecurityConfig {
                         .addLogoutHandler(logoutHandler)
                         .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()
                         ))
+                .oauth2Login(Customizer.withDefaults())
                 .build();
     }
 
