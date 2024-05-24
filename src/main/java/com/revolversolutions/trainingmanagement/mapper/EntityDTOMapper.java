@@ -21,4 +21,3 @@ public interface EntityDTOMapper <E,D>{
         return  dtos.stream().map(this::toEntity).toList();
     }
 }
-
