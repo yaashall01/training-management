@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 
 .env
+REQUEST.http
 
 ### STS ###
 .apt_generated

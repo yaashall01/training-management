@@ -1,0 +1,39 @@
+###
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "firstName": "Yassine",
+  "lastName": "chalh",
+  "username": "yaashall",
+  "email": "yassinechalh9@gmail.com",
+  "password": "passepasse"
+}
+
+
+###
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "username": "yaashall",
+  "password": "passepasse"
+}
+
+
+###
+
+GET http://localhost:8080/api/v1/user
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5YWFzaGFsbCIsImlhdCI6MTcxNjIzMzc3MywiZXhwIjoxNzE2MzIwMTczfQ.IBNVVprP4wmKoQb6VRjMWGrpFttluq5B7_uGrlUU34_iL08i5FTt6OOG89bZG9EX
+
+
+
+###
+
+POST http://localhost:8080/auth/logout
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5YWFzaGFsbCIsImlhdCI6MTcxNjIzMzc3MywiZXhwIjoxNzE2MzIwMTczfQ.IBNVVprP4wmKoQb6VRjMWGrpFttluq5B7_uGrlUU34_iL08i5FTt6OOG89bZG9EX
+
+###
+
+GET http://localhost:8080/api/v1/user/me
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5YWFzaGFsbCIsImlhdCI6MTcxNjIzMzc3MywiZXhwIjoxNzE2MzIwMTczfQ.IBNVVprP4wmKoQb6VRjMWGrpFttluq5B7_uGrlUU34_iL08i5FTt6OOG89bZG9EX
