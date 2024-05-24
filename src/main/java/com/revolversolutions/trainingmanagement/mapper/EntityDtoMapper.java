@@ -2,7 +2,12 @@ package com.revolversolutions.trainingmanagement.mapper;
 
 import java.util.List;
 
-public interface EntityDtoMapper <E,D>{
+/**
+ * Interface for mapping entities to DTOs and vice versa
+ * @param <E> Entity
+ * @param <D> DTO
+ */
+public interface EntityDTOMapper <E,D>{
     D toDto(E entity);
     E toEntity(D dto);
 
