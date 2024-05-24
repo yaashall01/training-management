@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ReviewDTOMpper implements EntityDtoMapper<Review, ReviewDTO>{
+public class ReviewDTOMpper implements EntityDTOMapper<Review, ReviewDTO>{
     private ModelMapper modelMapper = new ModelMapper();
     @Override
     public ReviewDTO toDto(Review entity) {
@@ -23,11 +23,11 @@ public class ReviewDTOMpper implements EntityDtoMapper<Review, ReviewDTO>{
 
     @Override
     public List<ReviewDTO> toDtos(List<Review> entities) {
-        return EntityDtoMapper.super.toDtos(entities);
+        return EntityDTOMapper.super.toDtos(entities);
     }
 
     @Override
     public List<Review> toEntities(List<ReviewDTO> dtos) {
-        return EntityDtoMapper.super.toEntities(dtos);
+        return EntityDTOMapper.super.toEntities(dtos);
     }
 }

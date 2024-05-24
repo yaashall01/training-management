@@ -6,7 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SessionDTOMapper implements EntityDtoMapper<Session , SessionDTO>{
+public class SessionDTOMapper implements EntityDTOMapper<Session , SessionDTO>{
     private ModelMapper modelMapper = new ModelMapper();
 
     @Override

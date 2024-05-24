@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class TrainingProgramDTOMapper implements EntityDtoMapper<TrainingProgram , TrainingProgramDTO>{
+public class TrainingProgramDTOMapper implements EntityDTOMapper<TrainingProgram , TrainingProgramDTO>{
     private  ModelMapper modelMapper = new ModelMapper();
     @Override
     public TrainingProgramDTO toDto(TrainingProgram entity) {
@@ -22,11 +22,11 @@ public class TrainingProgramDTOMapper implements EntityDtoMapper<TrainingProgram
 
     @Override
     public List<TrainingProgramDTO> toDtos(List<TrainingProgram> entities) {
-        return EntityDtoMapper.super.toDtos(entities);
+        return EntityDTOMapper.super.toDtos(entities);
     }
 
     @Override
     public List<TrainingProgram> toEntities(List<TrainingProgramDTO> dtos) {
-        return EntityDtoMapper.super.toEntities(dtos);
+        return EntityDTOMapper.super.toEntities(dtos);
     }
 }
