@@ -121,7 +121,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     @Transactional
     @Override
     public void deleteTrainingProgramsByIds(List<Long> ids) {
-        trainingProgramRepository.deleteByIdIn(ids);
+        trainingProgramRepository.deleteByProgramIdIn(ids);
     }
 
 }

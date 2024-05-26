@@ -35,7 +35,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh_token")
-    public ResponseEntity refreshToken(
+    public ResponseEntity<?> refreshToken(
             HttpServletRequest request,
             HttpServletResponse response
     ) {
@@ -43,7 +43,7 @@ public class AuthenticationController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity logout() {
+    public ResponseEntity<String> logout() {
         return ResponseEntity.ok("Logged out successfully");
     }
 

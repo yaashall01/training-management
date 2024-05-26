@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -17,7 +18,7 @@ import java.util.List;
 public class TrainingProgram {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long programId;
 
     private String title;
     private String description;
@@ -48,5 +49,22 @@ public class TrainingProgram {
             cascade = CascadeType.ALL
     )
     private List<Session> sessions;
+
+    @OneToMany(
+            mappedBy = "program",
+            orphanRemoval = true,
+            cascade = CascadeType.ALL
+    )
+    private List<Enrollment> enrollments = new ArrayList<>();
+
+
+    public void addEnrolment(Enrollment enrollment) {
+        if (!enrollments.contains(enrollment)) {
+            enrollments.add(enrollment);
+        }
+    }
+    public void removeEnrolment(Enrollment enrollment) {
+        enrollments.remove(enrollment);
+    }
 
 }

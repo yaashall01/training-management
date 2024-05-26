@@ -1,11 +1,20 @@
 package com.revolversolutions.trainingmanagement.serviceImpl;
 
+import com.revolversolutions.trainingmanagement.dto.EnrollmentDTO;
 import com.revolversolutions.trainingmanagement.dto.UserRequest;
 import com.revolversolutions.trainingmanagement.dto.UserResponse;
+import com.revolversolutions.trainingmanagement.entity.Enrollment;
+import com.revolversolutions.trainingmanagement.entity.EnrollmentId;
+import com.revolversolutions.trainingmanagement.entity.TrainingProgram;
 import com.revolversolutions.trainingmanagement.entity.User;
+import com.revolversolutions.trainingmanagement.enums.EnrolmentStatus;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
+import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundException;
+import com.revolversolutions.trainingmanagement.mapper.EnrollmentDTOMapper;
 import com.revolversolutions.trainingmanagement.mapper.UserRequestDTOMapper;
 import com.revolversolutions.trainingmanagement.mapper.UserResponseDTOMapper;
+import com.revolversolutions.trainingmanagement.repository.EnrollmentRepository;
+import com.revolversolutions.trainingmanagement.repository.TrainingProgramRepository;
 import com.revolversolutions.trainingmanagement.repository.UserRepository;
 import com.revolversolutions.trainingmanagement.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,16 +41,24 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     private final UserResponseDTOMapper userResponseDTOMapper;
     private final UserRequestDTOMapper userRequestDTOMapper;
     private final PasswordEncoder passwordEncoder;
+    private final EnrollmentRepository enrollmentRepository;
+    private final EnrollmentDTOMapper enrollmentDTOMapper;
+    private final TrainingProgramRepository trainingProgramRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
                            UserResponseDTOMapper userResponseDTOMapper,
                            UserRequestDTOMapper userRequestDTOMapper,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder,
+                           EnrollmentRepository enrollmentRepository,
+                           EnrollmentDTOMapper enrollmentDTOMapper, TrainingProgramRepository trainingProgramRepository) {
         this.userRepository = userRepository;
         this.userResponseDTOMapper = userResponseDTOMapper;
         this.userRequestDTOMapper = userRequestDTOMapper;
         this.passwordEncoder = passwordEncoder;
+        this.enrollmentRepository = enrollmentRepository;
+        this.enrollmentDTOMapper = enrollmentDTOMapper;
+        this.trainingProgramRepository = trainingProgramRepository;
     }
 
     @Override
@@ -56,7 +73,7 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     public UserResponse getUserById(long userId) {
         return userRepository.findById(userId)
                 .map(userResponseDTOMapper::toDto)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + userId));
     }
 
     @Override
@@ -144,24 +161,47 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         return user.getProfileImage();
     }
 
+    @Override
+    public EnrollmentDTO enrollProgram(Long userId, Long programId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
+        TrainingProgram program = trainingProgramRepository.findById(programId)
+                .orElseThrow(() -> new ResourceNotFoundException("Program not found"));
+
+        Enrollment enrollment = new Enrollment();
+        EnrollmentId enrollmentId = new EnrollmentId();
+
+        enrollmentId.setUserId(userId);
+        enrollmentId.setProgramId(programId);
+
+        enrollment.setEnrollmentId(enrollmentId);
+        enrollment.setUser(user);
+        enrollment.setProgram(program);
+        enrollment.setStatus(EnrolmentStatus.ENROLLED);
+
+        Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+        log.info("User enrolled successfully to program : {}", program.getTitle());
+
+        return enrollmentDTOMapper.toDto(savedEnrollment);
+    }
 
 
     private User findUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + userId));
     }
 
     private void getUserByEmailOrPhone(String email, String phone) {
         userRepository.findUserByEmailOrPhone(email, phone)
                 .ifPresent(existingUser -> {
-                    throw new RuntimeException("User already exists with this email or phone number");
+                    throw new ResourceNotFoundException("User already exists with this email or phone number");
                 });
     }
 
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findUserByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username : " + username));
     }
 }
 

@@ -5,7 +5,6 @@ import com.revolversolutions.trainingmanagement.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.NaturalId;
@@ -14,8 +13,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity(name = "User")
 @Table(name = "users")
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -69,8 +70,10 @@ public class User implements UserDetails {
     private byte[] profileImage;
 
     @OneToMany(mappedBy = "user")
-    private List<Token> tokens;
+    private transient List<Token> tokens;
 
+    @OneToMany(mappedBy = "user")
+    private List<Enrollment> enrollments = new ArrayList<>();
 
 
 
@@ -106,5 +109,15 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void addEnrolment(Enrollment enrolment) {
+        if (!enrollments.contains(enrolment)) {
+            enrollments.add(enrolment);
+        }
+    }
+
+    public void removeEnrolment(Enrollment enrolment) {
+        enrollments.remove(enrolment);
     }
 }

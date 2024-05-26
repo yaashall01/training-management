@@ -27,5 +27,6 @@ public class UserResponse {
     private LocalDate dob;
     private LocalDateTime createdAt;
     private UserRole userRole;
+    private byte[] profileImage;
 
 }

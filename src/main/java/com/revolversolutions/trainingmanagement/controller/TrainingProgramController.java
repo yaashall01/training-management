@@ -15,11 +15,6 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/program")
 @AllArgsConstructor
-@CrossOrigin(
-        origins = {"*"},
-        allowedHeaders = "*",
-        methods = {RequestMethod.GET,RequestMethod.DELETE,RequestMethod.POST,RequestMethod.PUT}
-)
 public class TrainingProgramController {
     private final TrainingProgramServiceImpl trainingProgramService;
 

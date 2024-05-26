@@ -15,12 +15,13 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "ConfirmationToken")
+@Table(name = "confirmation_token")
 public class ConfirmationToken {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long tokenId;
 
-    @Column(name = "confirmation_token")
+    @Column(name = "conf_token")
     private String confirmationToken;
 
     @Temporal(TemporalType.TIMESTAMP)

@@ -3,6 +3,7 @@ package com.revolversolutions.trainingmanagement.serviceImpl;
 import com.revolversolutions.trainingmanagement.dto.ReviewDTO;
 import com.revolversolutions.trainingmanagement.entity.Review;
 import com.revolversolutions.trainingmanagement.entity.TrainingProgram;
+import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundException;
 import com.revolversolutions.trainingmanagement.mapper.ReviewDTOMpper;
 import com.revolversolutions.trainingmanagement.repository.ReviewRepository;
 import com.revolversolutions.trainingmanagement.repository.TrainingProgramRepository;
@@ -37,7 +38,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review getReviewEntityById(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId).orElse(null);
+        Review review = reviewRepository.findById(reviewId).orElseThrow(()-> new ResourceNotFoundException("Review not found with id: " +reviewId));
         return review;
     }
 

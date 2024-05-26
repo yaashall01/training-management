@@ -10,11 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/review")
 @AllArgsConstructor
-@CrossOrigin(
-        origins = {"*"},
-        allowedHeaders = "*",
-        methods = {RequestMethod.GET,RequestMethod.DELETE,RequestMethod.POST,RequestMethod.PUT}
-)
 public class ReviewController {
     private final ReviewServiceImpl reviewService;
 

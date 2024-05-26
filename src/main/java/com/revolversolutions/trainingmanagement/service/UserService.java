@@ -1,5 +1,6 @@
 package com.revolversolutions.trainingmanagement.service;
 
+import com.revolversolutions.trainingmanagement.dto.EnrollmentDTO;
 import com.revolversolutions.trainingmanagement.dto.UserRequest;
 import com.revolversolutions.trainingmanagement.dto.UserResponse;
 import com.revolversolutions.trainingmanagement.entity.User;
@@ -33,4 +34,6 @@ public interface UserService{
     byte[] getUserProfileImage(Long userId);
 
     User loadUserByUsername(String username) throws UsernameNotFoundException;
+
+    public EnrollmentDTO enrollProgram(Long userId, Long programId);
 }

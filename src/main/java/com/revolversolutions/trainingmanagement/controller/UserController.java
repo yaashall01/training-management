@@ -1,6 +1,7 @@
 package com.revolversolutions.trainingmanagement.controller;
 
 
+import com.revolversolutions.trainingmanagement.dto.EnrollmentDTO;
 import com.revolversolutions.trainingmanagement.dto.UserRequest;
 import com.revolversolutions.trainingmanagement.dto.UserResponse;
 import com.revolversolutions.trainingmanagement.entity.User;
@@ -105,6 +106,12 @@ public class UserController {
         User currentUser = (User) authentication.getPrincipal();
         UserResponse userResponse = userService.getUserById(currentUser.getUserId());
         return ResponseEntity.ok(userResponse);
+    }
+
+    @PostMapping("/{userId}/programs/{programId}/enroll")
+    public ResponseEntity<EnrollmentDTO> enrollProgram(@PathVariable Long userId, @PathVariable Long programId) {
+        EnrollmentDTO enrollmentDTO = userService.enrollProgram(userId, programId);
+        return ResponseEntity.ok(enrollmentDTO);
     }
 
 

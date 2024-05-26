@@ -51,11 +51,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(h->h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("/","/auth/**", "/refresh_token/**", "/confirm-account/**", "/swagger-ui/index.html/**", "/v3/api-docs")
-                                //.requestMatchers("**")
+                        req -> req.//requestMatchers("/","/auth/**", "/refresh_token/**", "/confirm-account/**", "/swagger-ui/**", "/v3/api-docs/**")
+                                requestMatchers("**")
                                 .permitAll()
                 )
-                .authorizeHttpRequests(ar -> ar.requestMatchers("/admin_only/**").hasAuthority("ADMIN")
+                .authorizeHttpRequests(ar -> ar.requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(userService)
@@ -81,9 +81,10 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() { // configuration de CORS pour autoriser les requetes depuis n'importe quelle origine
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*")); // autoriser les requetes depuis n'importe quelle origine
-        configuration.setAllowedMethods(Arrays.asList("*")); // autoriser les requetes de n'importe quelle methode (GET, POST, PUT, DELETE, etc.)
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // autoriser les requetes de n'importe quelle methode (GET, POST, PUT, DELETE, etc.)
         configuration.setAllowedHeaders(Arrays.asList("*")); // autoriser les requetes avec n'importe quelle entete
         configuration.setExposedHeaders(Arrays.asList("*")); // autoriser les entetes exposees dans la reponse
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
