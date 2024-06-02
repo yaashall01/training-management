@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TrainingProgramDTO {
-    private Long id;
+    private String programId;
     private String title;
     private String description;
     private int duration;

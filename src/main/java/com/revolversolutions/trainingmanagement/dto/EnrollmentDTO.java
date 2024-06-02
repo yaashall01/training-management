@@ -19,8 +19,8 @@ import java.time.LocalDateTime;
 public class EnrollmentDTO {
 
     private EnrollmentId enrollmentId;
-    private User user;
-    private TrainingProgram program;
+    private UserResponse user;
+    private TrainingProgramDTO program;
     private LocalDateTime enrolledOn;
     private LocalDateTime cancelledOn;
     private LocalDateTime completedOn;

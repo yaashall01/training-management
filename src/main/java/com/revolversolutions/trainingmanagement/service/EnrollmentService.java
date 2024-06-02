@@ -1,14 +1,20 @@
 package com.revolversolutions.trainingmanagement.service;
 
 import com.revolversolutions.trainingmanagement.dto.EnrollmentDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 /**
  * @author Yassine CHALH
  */
 public interface EnrollmentService {
-    EnrollmentDTO updateEnrollment(Long userId, Long programId, EnrollmentDTO enrollmentDTO);
+    EnrollmentDTO updateEnrollment(String userId, String programId, EnrollmentDTO enrollmentDTO);
 
-    EnrollmentDTO getEnrollment(Long userId, Long programId);
+    EnrollmentDTO getEnrollment(String userId, String programId);
 
-    void deleteEnrollment(Long userId, Long programId);
+    Page<EnrollmentDTO> getAllEnrollment(Pageable pageable);
+
+    void deleteEnrollment(String userId, String programId);
 }
