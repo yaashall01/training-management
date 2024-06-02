@@ -3,8 +3,10 @@ package com.revolversolutions.trainingmanagement.serviceImpl;
 import com.revolversolutions.trainingmanagement.dto.ResponseTrainingProgramPage;
 import com.revolversolutions.trainingmanagement.dto.ReviewDTO;
 import com.revolversolutions.trainingmanagement.dto.TrainingProgramDTO;
+import com.revolversolutions.trainingmanagement.entity.FileDB;
 import com.revolversolutions.trainingmanagement.entity.TrainingProgram;
 import com.revolversolutions.trainingmanagement.enums.ProgramType;
+import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundException;
 import com.revolversolutions.trainingmanagement.mapper.TrainingProgramDTOMapper;
 import com.revolversolutions.trainingmanagement.repository.TrainingProgramRepository;
 import com.revolversolutions.trainingmanagement.service.TrainingProgramService;
@@ -29,8 +31,11 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class TrainingProgramServiceImpl implements TrainingProgramService {
+
     private final TrainingProgramRepository trainingProgramRepository;
     private final TrainingProgramDTOMapper trainingProgramMapper;
+    private final FileStorageService storageService;
+
     @Override
     public TrainingProgramDTO createTrainingProgram(TrainingProgramDTO programDTO) {
         TrainingProgram trainingProgram = trainingProgramMapper.toEntity(programDTO);
@@ -40,15 +45,15 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     }
 
     @Override
-    public TrainingProgramDTO getTrainingProgramById(Long id) {
+    public TrainingProgramDTO getTrainingProgramById(String id) {
         TrainingProgram trainingProgram = getProgramEntityById(id);
         log.info("Fetching Program by id: {} " , id);
         return trainingProgramMapper.toDto(trainingProgram);
     }
 
     @Override
-    public TrainingProgram getProgramEntityById(Long id) {
-        TrainingProgram trainingProgram = trainingProgramRepository.findById(id)
+    public TrainingProgram getProgramEntityById(String id) {
+        TrainingProgram trainingProgram = trainingProgramRepository.findByProgramId(id)
                 .orElse(null);
         return trainingProgram;
     }
@@ -98,8 +103,8 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     }
 
     @Override
-    public TrainingProgramDTO updateTrainingProgram(Long id , TrainingProgramDTO programDTO) {
-        TrainingProgram programToUpdate = getProgramEntityById(id);
+    public TrainingProgramDTO updateTrainingProgram(String programId , TrainingProgramDTO programDTO) {
+        TrainingProgram programToUpdate = getProgramEntityById(programId);
         programToUpdate.setTitle(programDTO.getTitle());
         programToUpdate.setContent(programDTO.getContent());
         programToUpdate.setDescription(programDTO.getDescription());
@@ -107,15 +112,15 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         programToUpdate.setFees(programDTO.getFees());
 
         TrainingProgram updatedProgram = trainingProgramRepository.save(programToUpdate);
-        log.info("Program with id: {} has been updated successfully", id);
+        log.info("Program with id: {} has been updated successfully", programId);
         return trainingProgramMapper.toDto(updatedProgram);
     }
 
     @Override
-    public void deleteTrainingProgram(Long id) {
-    TrainingProgram programToDelete = getProgramEntityById(id);
+    public void deleteTrainingProgram(String programId) {
+    TrainingProgram programToDelete = getProgramEntityById(programId);
     trainingProgramRepository.delete(programToDelete);
-        log.info("Program with id: {} has been deleted successfully", id);
+        log.info("Program with id: {} has been deleted successfully", programId);
     }
 
     @Transactional
@@ -124,4 +129,9 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         trainingProgramRepository.deleteByProgramIdIn(ids);
     }
 
+    public List<FileDB> getProgramImages(Long programId){
+        TrainingProgram program = trainingProgramRepository.findById(programId)
+                .orElseThrow(()->new ResourceNotFoundException("Program not found with id " + programId));
+        return program.getProgramImages();
+    }
 }

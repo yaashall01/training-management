@@ -46,7 +46,6 @@ public class Enrollment {
     private TrainingProgram program;
 
     @CreationTimestamp
-    @NotNull
     @Column(updatable = false)
     private LocalDateTime enrolledOn;
 
@@ -55,7 +54,6 @@ public class Enrollment {
     private LocalDateTime completedOn;
 
     @UpdateTimestamp
-    @NotNull
     private LocalDateTime lastUpdateOn;
 
     private boolean completed;

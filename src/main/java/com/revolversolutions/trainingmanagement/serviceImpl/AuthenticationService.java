@@ -10,6 +10,8 @@ import com.revolversolutions.trainingmanagement.enums.UserRole;
 import com.revolversolutions.trainingmanagement.repository.TokenRepository;
 import com.revolversolutions.trainingmanagement.repository.UserRepository;
 import com.revolversolutions.trainingmanagement.security.JwtService;
+import com.revolversolutions.trainingmanagement.service.EmailService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +23,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -32,18 +36,21 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final TokenRepository tokenRepository;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
 
 
     public AuthenticationService(UserRepository userRepository,
                                  PasswordEncoder passwordEncoder,
                                  JwtService jwtService,
                                  TokenRepository tokenRepository,
-                                 AuthenticationManager authenticationManager) {
+                                 AuthenticationManager authenticationManager,
+                                 EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.tokenRepository = tokenRepository;
         this.authenticationManager = authenticationManager;
+        this.emailService = emailService;
     }
 
     public AuthenticationResponse register(RegisterUserDto request) {
@@ -69,6 +76,21 @@ public class AuthenticationService {
         String refreshToken = jwtService.generateRefreshToken(user);
 
         saveUserToken(accessToken, refreshToken, user);
+
+        // Send signup confirmation email
+        String subject = "Welcome to Our Application!";
+        String templatePath = "src/main/resources/templates/emailTemplate.html";
+        String message = "Congratulations you're in now enjooy !!";
+        Map<String, String> variables = Map.of(
+                "subject",subject,
+                "name", user.getFirstName() + " " + user.getLastName(),
+                "message",message
+        );
+        try {
+            emailService.sendEmail(user.getEmail(), subject, templatePath, variables);
+        } catch (MessagingException | IOException e) {
+            throw new RuntimeException(e);
+        }
 
         log.info("User registration was successful");
         return new AuthenticationResponse(accessToken, refreshToken,"User registration was successful");
@@ -132,7 +154,7 @@ public class AuthenticationService {
 
 
     private void revokeAllTokenByUser(User user) {
-        List<Token> validTokens = tokenRepository.findAllAccessTokensByUser(user.getUserId());
+        List<Token> validTokens = tokenRepository.findAllAccessTokensByUser(user.getId());
         if(validTokens.isEmpty()) {
             return;
         }

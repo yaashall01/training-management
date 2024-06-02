@@ -10,14 +10,14 @@ import java.util.List;
 public interface TrainingProgramService {
     TrainingProgramDTO createTrainingProgram(TrainingProgramDTO programDTO);
 
-    TrainingProgramDTO getTrainingProgramById(Long id);
-    TrainingProgram getProgramEntityById(Long id);
+    TrainingProgramDTO getTrainingProgramById(String programId);
+    TrainingProgram getProgramEntityById(String programId);
 
     ResponseTrainingProgramPage getAllTrainingPrograms(int pageNo, int pageSize, String sortBy, String sortDir , String search , String programType);
 
-    TrainingProgramDTO updateTrainingProgram(Long id ,TrainingProgramDTO programDTO);
+    TrainingProgramDTO updateTrainingProgram(String programId ,TrainingProgramDTO programDTO);
 
-    void deleteTrainingProgram(Long id);
+    void deleteTrainingProgram(String programId);
     void deleteTrainingProgramsByIds(List<Long> ids);
 
 }

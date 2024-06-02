@@ -3,12 +3,10 @@ package com.revolversolutions.trainingmanagement.serviceImpl;
 import com.revolversolutions.trainingmanagement.dto.EnrollmentDTO;
 import com.revolversolutions.trainingmanagement.dto.UserRequest;
 import com.revolversolutions.trainingmanagement.dto.UserResponse;
-import com.revolversolutions.trainingmanagement.entity.Enrollment;
-import com.revolversolutions.trainingmanagement.entity.EnrollmentId;
-import com.revolversolutions.trainingmanagement.entity.TrainingProgram;
-import com.revolversolutions.trainingmanagement.entity.User;
+import com.revolversolutions.trainingmanagement.entity.*;
 import com.revolversolutions.trainingmanagement.enums.EnrolmentStatus;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
+import com.revolversolutions.trainingmanagement.exception.AlreadyEnrolledException;
 import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundException;
 import com.revolversolutions.trainingmanagement.mapper.EnrollmentDTOMapper;
 import com.revolversolutions.trainingmanagement.mapper.UserRequestDTOMapper;
@@ -16,12 +14,12 @@ import com.revolversolutions.trainingmanagement.mapper.UserResponseDTOMapper;
 import com.revolversolutions.trainingmanagement.repository.EnrollmentRepository;
 import com.revolversolutions.trainingmanagement.repository.TrainingProgramRepository;
 import com.revolversolutions.trainingmanagement.repository.UserRepository;
+import com.revolversolutions.trainingmanagement.service.EmailService;
 import com.revolversolutions.trainingmanagement.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,6 +42,8 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     private final EnrollmentRepository enrollmentRepository;
     private final EnrollmentDTOMapper enrollmentDTOMapper;
     private final TrainingProgramRepository trainingProgramRepository;
+    private final EmailService emailService;
+    private final FileStorageService storageService;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
@@ -51,7 +51,9 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
                            UserRequestDTOMapper userRequestDTOMapper,
                            PasswordEncoder passwordEncoder,
                            EnrollmentRepository enrollmentRepository,
-                           EnrollmentDTOMapper enrollmentDTOMapper, TrainingProgramRepository trainingProgramRepository) {
+                           EnrollmentDTOMapper enrollmentDTOMapper,
+                           TrainingProgramRepository trainingProgramRepository,
+                           EmailService emailService, FileStorageService storageService) {
         this.userRepository = userRepository;
         this.userResponseDTOMapper = userResponseDTOMapper;
         this.userRequestDTOMapper = userRequestDTOMapper;
@@ -59,6 +61,8 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         this.enrollmentRepository = enrollmentRepository;
         this.enrollmentDTOMapper = enrollmentDTOMapper;
         this.trainingProgramRepository = trainingProgramRepository;
+        this.emailService = emailService;
+        this.storageService = storageService;
     }
 
     @Override
@@ -70,8 +74,8 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     }
 
     @Override
-    public UserResponse getUserById(long userId) {
-        return userRepository.findById(userId)
+    public UserResponse getUserById(String userId) {
+        return userRepository.findUserByUserId(userId)
                 .map(userResponseDTOMapper::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + userId));
     }
@@ -87,7 +91,7 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     }
 
     @Override
-    public UserResponse updateUser(long userId, UserRequest userRequest)
+    public UserResponse updateUser(String userId, UserRequest userRequest)
             throws IOException {
         User user = findUserById(userId);
         user.setFirstName(userRequest.getFirstName());
@@ -100,17 +104,19 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         user.setDob(userRequest.getDob());
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
-        if (userRequest.getProfileImage() != null && !userRequest.getProfileImage().isEmpty()) {
+/*        if (userRequest.getProfileImage() != null && !userRequest.getProfileImage().isEmpty()) {
             user.setProfileImage(userRequest.getProfileImage().getBytes());
         }
+
+ */
         User updatedUser = userRepository.save(user);
         log.info("User updated successfully name : {}", updatedUser.getFirstName());
         return userResponseDTOMapper.toDto(updatedUser);
     }
 
     @Override
-    public void deleteUser(long userId) {
-        userRepository.deleteById(userId);
+    public void deleteUser(String userId) {
+        userRepository.deleteByUserId(userId);
         log.info("User with id : {} deleted successfully", userId);
     }
 
@@ -148,32 +154,43 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     }
 
     @Override
-    public void uploadProfileImage(Long userId, MultipartFile file)
-            throws IOException {
-        User user = findUserById(userId);
-        user.setProfileImage(file.getBytes());
-        userRepository.save(user);
-    }
-
-    @Override
-    public byte[] getUserProfileImage(Long userId) {
-        User user = findUserById(userId);
+    public FileDB getUserProfileImage(String userId){
+        User user = userRepository.findUserByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId " + userId));
         return user.getProfileImage();
     }
 
     @Override
-    public EnrollmentDTO enrollProgram(Long userId, Long programId) {
-        User user = userRepository.findById(userId)
+    public void uploadUserProfileImage(String userId, MultipartFile file){
+        User user = userRepository.findUserByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with userId " + userId));
+
+        try {
+            FileDB fileDB = storageService.store(file);
+            user.setProfileImage(fileDB);
+            userRepository.save(user);
+        } catch (IOException e) {
+            throw new RuntimeException("Error storing file", e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Uploaded file is not a valid image", e);
+        }
+    }
+
+    @Override
+    public EnrollmentDTO enrollProgram(String userId, String programId) {
+        User user = userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        TrainingProgram program = trainingProgramRepository.findById(programId)
+        TrainingProgram program = trainingProgramRepository.findByProgramId(programId)
                 .orElseThrow(() -> new ResourceNotFoundException("Program not found"));
 
-        Enrollment enrollment = new Enrollment();
-        EnrollmentId enrollmentId = new EnrollmentId();
+        EnrollmentId enrollmentId = new EnrollmentId(user.getId(), program.getId());
 
-        enrollmentId.setUserId(userId);
-        enrollmentId.setProgramId(programId);
+        if (enrollmentRepository.existsByEnrollmentId(enrollmentId)) {
+            throw new AlreadyEnrolledException("User is already enrolled in this program");
+        }
+
+        Enrollment enrollment = new Enrollment();
 
         enrollment.setEnrollmentId(enrollmentId);
         enrollment.setUser(user);
@@ -181,14 +198,16 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         enrollment.setStatus(EnrolmentStatus.ENROLLED);
 
         Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+        //emailService.sendEmail("Congratulation you successfully enrolled");
         log.info("User enrolled successfully to program : {}", program.getTitle());
 
         return enrollmentDTOMapper.toDto(savedEnrollment);
     }
 
 
-    private User findUserById(Long userId) {
-        return userRepository.findById(userId)
+
+    private User findUserById(String userId) {
+        return userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + userId));
     }
 
@@ -203,5 +222,22 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         return userRepository.findUserByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username : " + username));
     }
+
+    /*
+    @Override
+    public void uploadProfileImage(String userId, MultipartFile file)
+            throws IOException {
+        User user = findUserById(userId);
+        user.setProfileImage(file.getBytes());
+        userRepository.save(user);
+    }
+
+    @Override
+    public byte[] getUserProfileImage(String userId) {
+        User user = findUserById(userId);
+        return user.getProfileImage();
+    }
+*/
+
 }
 

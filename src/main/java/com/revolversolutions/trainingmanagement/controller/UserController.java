@@ -4,6 +4,7 @@ package com.revolversolutions.trainingmanagement.controller;
 import com.revolversolutions.trainingmanagement.dto.EnrollmentDTO;
 import com.revolversolutions.trainingmanagement.dto.UserRequest;
 import com.revolversolutions.trainingmanagement.dto.UserResponse;
+import com.revolversolutions.trainingmanagement.entity.FileDB;
 import com.revolversolutions.trainingmanagement.entity.User;
 import com.revolversolutions.trainingmanagement.service.UserService;
 import jakarta.validation.Valid;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -35,9 +37,10 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable long userId){
+    public ResponseEntity<UserResponse> getUserById(@PathVariable String userId){
         return ResponseEntity.ok(userService.getUserById(userId));
     }
+
 
     @PostMapping
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest){
@@ -47,14 +50,14 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable long userId, @Valid @ModelAttribute("userRequest") UserRequest userRequest)
+    public ResponseEntity<UserResponse> updateUser(@PathVariable String userId, @Valid @ModelAttribute("userRequest") UserRequest userRequest)
         throws IOException{
         UserResponse userResponse = userService.updateUser(userId, userRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable long userId){
+    public ResponseEntity<Void> deleteUser(@PathVariable String userId){
         userService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -78,25 +81,27 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/profile-image")
-    public ResponseEntity<String> uploadProfileImage(@PathVariable Long userId, @RequestParam("file") MultipartFile file) throws IOException {
-
+    public ResponseEntity<?> uploadProfileImage(@PathVariable String userId,
+                                                @RequestParam("file") MultipartFile file) {
         try {
-            userService.uploadProfileImage(userId, file);
+            userService.uploadUserProfileImage(userId, file);
             return ResponseEntity.status(HttpStatus.OK).body("Profile image uploaded successfully");
-        }catch(IOException a){
+        }catch(IOException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading profile image");
         }
+
     }
 
     @GetMapping("/{userId}/profile-image")
-    public ResponseEntity<byte[]> getProfileImage(@PathVariable Long userId) {
+    public ResponseEntity<FileDB> getUserProfileImage(@PathVariable String userId) {
         try {
-            byte[] imageData = userService.getUserProfileImage(userId);
-            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg").body(imageData);
+            FileDB fileDB = userService.getUserProfileImage(userId);
+            return ResponseEntity.status(HttpStatus.FOUND).body(fileDB);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> authenticatedUser(){
@@ -109,10 +114,36 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/programs/{programId}/enroll")
-    public ResponseEntity<EnrollmentDTO> enrollProgram(@PathVariable Long userId, @PathVariable Long programId) {
+    public ResponseEntity<EnrollmentDTO> enrollProgram(@PathVariable String userId, @PathVariable String programId) {
         EnrollmentDTO enrollmentDTO = userService.enrollProgram(userId, programId);
         return ResponseEntity.ok(enrollmentDTO);
     }
+
+
+
+    /*
+    @PostMapping("/{userId}/profile-image")
+    public ResponseEntity<String> uploadProfileImage(@PathVariable String userId, @RequestParam("file") MultipartFile file) throws IOException {
+
+        try {
+            userService.uploadProfileImage(userId, file);
+            return ResponseEntity.status(HttpStatus.OK).body("Profile image uploaded successfully");
+        }catch(IOException a){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading profile image");
+        }
+    }
+
+    @GetMapping("/{userId}/profile-image")
+    public ResponseEntity<byte[]> getProfileImage(@PathVariable String userId) {
+        try {
+            byte[] imageData = userService.getUserProfileImage(userId);
+            return ResponseEntity.ok().header(HttpHeaders.CONTENT_TYPE, "image/jpeg").body(imageData);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+ */
 
 
 

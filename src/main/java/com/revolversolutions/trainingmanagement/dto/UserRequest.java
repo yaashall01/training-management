@@ -52,6 +52,4 @@ public class UserRequest {
 
     private UserRole userRole;
 
-    private MultipartFile profileImage;
-
 }
