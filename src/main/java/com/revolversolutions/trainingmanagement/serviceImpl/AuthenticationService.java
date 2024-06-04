@@ -78,8 +78,8 @@ public class AuthenticationService {
         saveUserToken(accessToken, refreshToken, user);
 
         // Send signup confirmation email
+        String templatePath = "templates/emailTemplate.html";
         String subject = "Welcome to Our Application!";
-        String templatePath = "src/main/resources/templates/emailTemplate.html";
         String message = "Congratulations you're in now enjooy !!";
         Map<String, String> variables = Map.of(
                 "subject",subject,

@@ -1,5 +1,5 @@
 ###
-POST http://localhost:8080/auth/register
+POST https://training-management-7x0n.onrender.com/auth/register
 Content-Type: application/json
 
 {
@@ -7,12 +7,12 @@ Content-Type: application/json
   "lastName": "chalh",
   "username": "yaashall",
   "email": "yassinechalh9@gmail.com",
-  "password": "passepasse"
+  "password": "passe12passe"
 }
 
 
 ###
-POST http://localhost:8080/auth/login
+POST https://training-management-7x0n.onrender.com/auth/login
 Content-Type: application/json
 
 {

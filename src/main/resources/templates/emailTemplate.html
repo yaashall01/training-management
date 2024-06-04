@@ -7,7 +7,7 @@
     body {
       font-family: Arial, sans-serif;
       line-height: 1.6;
-      background-color: #ffffff;
+      background-color: #EEEEEE;
       color: #000000;
       margin: 0;
       padding: 0;
@@ -18,10 +18,11 @@
       max-width: 600px;
       border: 1px solid #ddd;
       border-radius: 5px;
+      background-color: #ffffff;
     }
     .header {
       text-align: center;
-      background-color: #000000;
+      background-color: #75ab38;
       color: #ffffff;
       padding: 20px;
       border-radius: 5px 5px 0 0;
@@ -29,6 +30,7 @@
     .header h1 {
       margin: 0;
       font-size: 24px;
+
     }
     .content {
       padding: 20px;
@@ -42,7 +44,7 @@
       margin: 20px auto;
       padding: 10px 0;
       text-align: center;
-      background-color: #000000;
+      background-color: #75ab38;
       color: #ffffff;
       text-decoration: none;
       border-radius: 5px;
@@ -59,25 +61,25 @@
 <body>
 <div class="container">
   <div class="header">
-    <h1>${subject}</h1>
+    <h1>{{subject}}</h1>
   </div>
   <div class="content">
-    <p>Dear ${name},</p>
+    <p>Dear {{name}},</p>
     <p>Welcome to our Yoga and Spiritual Activities Training Center! We are thrilled to have you join our community.</p>
     <p>At our center, we offer a variety of classes and workshops designed to help you achieve physical, mental, and spiritual well-being. Whether you're a beginner or an experienced practitioner, you'll find something that suits your needs.</p>
     <p>Here's a quick overview of what we offer:</p>
     <ul>
-      <li>Yoga classes for all levels</li>
-      <li>Meditation and mindfulness sessions</li>
-      <li>Workshops on spiritual growth and self-discovery</li>
-      <li>Community events and retreats</li>
+      <li>Yoga classes for all levels &#128524; </li>
+      <li>Meditation and mindfulness sessions &#129496; </li>
+      <li>Workshops on spiritual growth and self-discovery &#128255; </li>
+      <li>Community events and retreats &#127797; </li>
     </ul>
-    <p>${message}</p>
+    <p>{{message}}</p>
     <p>We're committed to providing a supportive and nurturing environment where you can explore and deepen your practice.</p>
-    <a href="https://yourapp.com/join" class="button">Join Us</a>
+    <a href="https://training-app-react.vercel.app/app/courses/explore" class="button">Join Us</a>
   </div>
   <div class="footer">
-    <p>&copy; 2024 Our Application. All rights reserved.</p>
+    <p>&copy; 2024 REVOLVER SOLUTIONS. All rights reserved.</p>
   </div>
 </div>
 </body>
