@@ -33,7 +33,7 @@ public class TrainingProgramController {
     public ResponseEntity<ResponseTrainingProgramPage> getPrograms(
         @RequestParam(name = "pageIndex" ,defaultValue = "0" ,required = false) int pageNo,
         @RequestParam(name = "pageSize" ,defaultValue = "20" ,required = false) int pageSize,
-        @RequestParam(name = "sortBy" ,defaultValue = "programId" ,required = false) String sortBy,
+        @RequestParam(name = "sortBy" ,defaultValue = "id" ,required = false) String sortBy,
         @RequestParam(name = "sortDir" ,defaultValue = "asc" ,required = false) String sortDir,
         @RequestParam(name = "term" ,defaultValue = "" ,required = false) String term,
         @RequestParam(name = "programType" ,required = false) String programType
