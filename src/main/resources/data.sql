@@ -4,7 +4,7 @@ VALUES
     (UUID(), 'Jane', 'Doe', 'jane.doe@example.com', '0987654321', 'janedoe', 'password456', 'female', '1995-02-02', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TRAINER'),
     (UUID(), 'Bob', 'Smith', 'bob.smith@example.com', '1122334455', 'bobsmith', 'password789', 'male', '1985-03-03', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TRAINEE'),
     (UUID(), 'Yassine', 'CHALH', 'yassinechalh9@gmail.com', '0673151392', 'yaashall', '$2a$10$GNFcjBjNw9T1jfn1P4ALRe.vol9.u2wtB9aKpd.e8fdgeBW3jyo2e', 'male', '1985-03-03', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ADMIN'),
-    (UUID(), 'Rida', 'EL Ayadi', 'reelayadi@gmail.com', '1122334455', 'bobsmith', '$2a$10$5Q52FpSIE.RDx6vW9VnlceTp3ci3ojRVl.zas450gMKsSdOtkO.mi', 'male', '1985-03-03', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ADMIN');
+    (UUID(), 'Rida', 'EL Ayadi', 'reelayadi@gmail.com', '1122334455', 'bobsmith', '$2a$10$GNFcjBjNw9T1jfn1P4ALRe.vol9.u2wtB9aKpd.e8fdgeBW3jyo2e', 'male', '1985-03-03', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ADMIN');
 
 
 INSERT INTO program (program_id, title, description, duration, content, address, fees, program_type, position) VALUES
