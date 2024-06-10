@@ -1,12 +1,12 @@
 ###
-POST https://training-management-7x0n.onrender.com/auth/register
+POST http://localhost:8080/auth/register
 Content-Type: application/json
 
 {
   "firstName": "Yassine",
   "lastName": "chalh",
-  "username": "yaashall",
-  "email": "yassinechalh9@gmail.com",
+  "username": "yaashaall",
+  "email": "yassinechalh10@gmail.com",
   "password": "passe12passe"
 }
 
@@ -24,7 +24,7 @@ Content-Type: application/json
 ###
 
 GET http://localhost:8080/api/v1/user
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5YWFzaGFsbCIsInJvbGUiOiJUUkFJTkVFIiwiZW1haWwiOiJ5YXNzaW5lY2hhbGg5QGdtYWlsLmNvbSIsImlhdCI6MTcxNjU4NzA1MywiZXhwIjoxNzE2NjczNDUzfQ.iwKJO_Vst3-JXWDsRUcjfWf57mv2ZAKCClkOgpVJpT6xnTFbe6Muggf6ydAkN6NS
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5YWFzaGFhbGwiLCJyb2xlIjoiVFJBSU5FRSIsImVtYWlsIjoieWFzc2luZWNoYWxoMTBAZ21haWwuY29tIiwiaWF0IjoxNzE4MDQ3MjkwLCJleHAiOjE3MTgxMzM2OTB9.hLxB6YMOGpg8LwWCAKmfOYhBJUXiAHqDwMdVlPP5MJKmzf_6_64UPO8yxa_fzVjh
 
 
 
@@ -36,4 +36,20 @@ Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5YWFzaGFsbCIsImlhdCI6MTcxN
 ###
 
 GET http://localhost:8080/api/v1/user/me
-Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5YWFzaGFsbCIsInJvbGUiOiJUUkFJTkVFIiwiZW1haWwiOiJ5YXNzaW5lY2hhbGg5QGdtYWlsLmNvbSIsImlhdCI6MTcxNjU4NzA1MywiZXhwIjoxNzE2NjczNDUzfQ.iwKJO_Vst3-JXWDsRUcjfWf57mv2ZAKCClkOgpVJpT6xnTFbe6Muggf6ydAkN6NS
+Authorization: Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJ5YWFzaGFhbGwiLCJyb2xlIjoiVFJBSU5FRSIsImVtYWlsIjoieWFzc2luZWNoYWxoMTBAZ21haWwuY29tIiwiaWF0IjoxNzE4MDQ3MjkwLCJleHAiOjE3MTgxMzM2OTB9.hLxB6YMOGpg8LwWCAKmfOYhBJUXiAHqDwMdVlPP5MJKmzf_6_64UPO8yxa_fzVjh
+
+
+
+###
+GET http://localhost:8080/api/v1/user
+
+
+###
+GET http://localhost:8080/api/v1/program
+
+
+
+
+###
+POST http://localhost:8080/api/v1/user/65bc51c9-2708-11ef-b7a0-a029192ae92b/programs/65bd3d86-2708-11ef-b7a0-a029192ae92b/enroll
+

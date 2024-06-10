@@ -16,6 +16,7 @@ import com.revolversolutions.trainingmanagement.repository.TrainingProgramReposi
 import com.revolversolutions.trainingmanagement.repository.UserRepository;
 import com.revolversolutions.trainingmanagement.service.EmailService;
 import com.revolversolutions.trainingmanagement.service.UserService;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Map;
 
 
 @Service
@@ -91,9 +93,12 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     }
 
     @Override
-    public UserResponse updateUser(String userId, UserRequest userRequest)
+    public UserResponse updateUser(String userId,
+                                   UserRequest userRequest)
             throws IOException {
+
         User user = findUserById(userId);
+
         user.setFirstName(userRequest.getFirstName());
         user.setLastName(userRequest.getLastName());
         user.setUserName(userRequest.getUserName());
@@ -110,7 +115,7 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
 
  */
         User updatedUser = userRepository.save(user);
-        log.info("User updated successfully name : {}", updatedUser.getFirstName());
+        log.info("User updated successfully name : {}", updatedUser.getFirstName() + " "+updatedUser.getLastName());
         return userResponseDTOMapper.toDto(updatedUser);
     }
 
@@ -162,8 +167,11 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
 
     @Override
     public void uploadUserProfileImage(String userId, MultipartFile file){
+        if (file == null || file.isEmpty())
+            throw new IllegalArgumentException("Uploaded files list is empty or null");
+
         User user = userRepository.findUserByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with userId " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId " + userId));
 
         try {
             FileDB fileDB = storageService.store(file);
@@ -186,20 +194,34 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
 
         EnrollmentId enrollmentId = new EnrollmentId(user.getId(), program.getId());
 
-        if (enrollmentRepository.existsByEnrollmentId(enrollmentId)) {
+        if (enrollmentRepository.existsById(enrollmentId)) {
             throw new AlreadyEnrolledException("User is already enrolled in this program");
         }
 
         Enrollment enrollment = new Enrollment();
 
-        enrollment.setEnrollmentId(enrollmentId);
+        enrollment.setId(enrollmentId);
         enrollment.setUser(user);
         enrollment.setProgram(program);
         enrollment.setStatus(EnrolmentStatus.ENROLLED);
 
         Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
-        //emailService.sendEmail("Congratulation you successfully enrolled");
         log.info("User enrolled successfully to program : {}", program.getTitle());
+
+        // Send signup email
+        String templatePath = "templates/emailTemplate.html";
+        String subject = "You are just enrolled "+ program.getTitle();
+        String message = "Congratulations you're in now enjooy !!";
+        Map<String, String> variables = Map.of(
+                "subject",subject,
+                "name", user.getFirstName() + " " + user.getLastName(),
+                "message",message
+        );
+        try {
+            emailService.sendEmail(user.getEmail(), subject, templatePath, variables);
+        } catch (MessagingException | IOException e) {
+            throw new RuntimeException(e);
+        }
 
         return enrollmentDTOMapper.toDto(savedEnrollment);
     }

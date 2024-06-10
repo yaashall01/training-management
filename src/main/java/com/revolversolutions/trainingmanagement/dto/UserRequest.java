@@ -1,6 +1,9 @@
 package com.revolversolutions.trainingmanagement.dto;
 
+import com.revolversolutions.trainingmanagement.enums.UserGender;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -39,8 +42,8 @@ public class UserRequest {
     @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$", message = "Phone number should be valid")
     private String phone;
 
-    @NotEmpty
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private UserGender gender;
 
     @NotEmpty(message = "Address should not be empty")
     private String address;

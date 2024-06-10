@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class EnrollmentDTO {
 
-    private EnrollmentId enrollmentId;
+    private String enrollmentId;
     private UserResponse user;
     private TrainingProgramDTO program;
     private LocalDateTime enrolledOn;

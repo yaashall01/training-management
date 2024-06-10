@@ -31,19 +31,29 @@ public class TrainingProgram {
     private String programId;
 
     private String title;
+
     private String description;
+
     private int duration;
+
     @Lob
     private String content;
+
     private String address;
+
     private double fees;
+
     @Enumerated(EnumType.STRING)
     private ProgramType programType;
+
     @ManyToOne
     private TrainingProgram prerequisite;
+
     private int position;
+
     @CreationTimestamp
     private LocalDateTime createdAt;
+
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
@@ -53,6 +63,7 @@ public class TrainingProgram {
             cascade = CascadeType.ALL
     )
     private List<Review> reviews;
+
     @OneToMany(
             mappedBy = "program",
             orphanRemoval = true,

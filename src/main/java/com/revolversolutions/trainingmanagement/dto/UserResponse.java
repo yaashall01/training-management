@@ -1,6 +1,8 @@
 package com.revolversolutions.trainingmanagement.dto;
 
 
+import com.revolversolutions.trainingmanagement.entity.FileDB;
+import com.revolversolutions.trainingmanagement.enums.UserGender;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,11 +25,11 @@ public class UserResponse {
     private String userName;
     private String email;
     private String phone;
-    private String gender;
+    private UserGender gender;
     private String address;
     private LocalDate dob;
     private LocalDateTime createdAt;
     private UserRole userRole;
-    private byte[] profileImage;
+    private FileDB profileImage;
 
 }

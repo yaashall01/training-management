@@ -14,10 +14,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		"com.revolversolutions.trainingmanagement.serviceImpl",
 		"com.revolversolutions.trainingmanagement.controller",
 		"com.revolversolutions.trainingmanagement.exception",
-		"com.revolversolutions.trainingmanagement.security"
+		"com.revolversolutions.trainingmanagement.security",
+		"com.revolversolutions.trainingmanagement.config",
+		"com.revolversolutions.trainingmanagement.aop"
 })
-@EntityScan("com.revolversolutions.trainingmanagement.entity")
-@EnableJpaRepositories("com.revolversolutions.trainingmanagement.repository")
+@EnableJpaRepositories(basePackages = "com.revolversolutions.trainingmanagement.repository")
+@EntityScan(basePackages = "com.revolversolutions.trainingmanagement.entity")
 public class TrainingManagementApplication {
 
 	public static void main(String[] args) {

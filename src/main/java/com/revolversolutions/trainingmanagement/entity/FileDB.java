@@ -23,5 +23,6 @@ public class FileDB {
     private String type;
 
     @Lob
+    @Column(length = 100000)
     private byte[] data;
 }

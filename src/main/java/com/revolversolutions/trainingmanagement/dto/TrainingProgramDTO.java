@@ -1,5 +1,7 @@
 package com.revolversolutions.trainingmanagement.dto;
 
+import com.revolversolutions.trainingmanagement.entity.FileDB;
+import com.revolversolutions.trainingmanagement.enums.ProgramType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,13 +14,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TrainingProgramDTO {
+
     private String programId;
     private String title;
     private String description;
     private int duration;
     private String content;
     private double fees;
-    private String programType;
-    private List<ReviewDTO> reviewS;
-//    private List<SessionDTO> sessions;
+    private ProgramType programType;
+    private List<ReviewDTO> reviews;
+    private List<FileDB> programImages;
+    private List<SessionDTO> sessions;
 }

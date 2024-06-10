@@ -3,11 +3,18 @@ package com.revolversolutions.trainingmanagement.service;
 import com.revolversolutions.trainingmanagement.dto.ReviewDTO;
 import com.revolversolutions.trainingmanagement.entity.Review;
 
+import java.util.List;
+
 public interface ReviewService {
-    ReviewDTO createReview(Long programId, Long userId, ReviewDTO reviewDTO);
+    ReviewDTO createReview(String programId, ReviewDTO reviewDTO);
 
-    ReviewDTO getReviewById(Long reviewId);
-    Review getReviewEntityById(Long reviewId);
+    ReviewDTO getReviewById(String reviewId);
 
-    void deleteReview(Long reviewId);
+    ReviewDTO updateReview(String programId, ReviewDTO reviewDTO);
+
+    List<ReviewDTO> getReviewsByProgramId(String programId);
+
+    void deleteReview(String reviewId);
+
+    //Review getReviewEntityById(Long reviewId);
 }

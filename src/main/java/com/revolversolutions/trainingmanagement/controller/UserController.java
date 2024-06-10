@@ -50,7 +50,7 @@ public class UserController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable String userId, @Valid @ModelAttribute("userRequest") UserRequest userRequest)
+    public ResponseEntity<UserResponse> updateUser(@PathVariable String userId, @Valid @RequestBody UserRequest userRequest)
         throws IOException{
         UserResponse userResponse = userService.updateUser(userId, userRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
@@ -81,7 +81,7 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/profile-image")
-    public ResponseEntity<?> uploadProfileImage(@PathVariable String userId,
+    public ResponseEntity<String> uploadProfileImage(@PathVariable String userId,
                                                 @RequestParam("file") MultipartFile file) {
         try {
             userService.uploadUserProfileImage(userId, file);

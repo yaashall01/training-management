@@ -1,11 +1,9 @@
 package com.revolversolutions.trainingmanagement.serviceImpl;
 
 import com.revolversolutions.trainingmanagement.dto.ResponseTrainingProgramPage;
-import com.revolversolutions.trainingmanagement.dto.ReviewDTO;
 import com.revolversolutions.trainingmanagement.dto.TrainingProgramDTO;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
 import com.revolversolutions.trainingmanagement.entity.TrainingProgram;
-import com.revolversolutions.trainingmanagement.enums.ProgramType;
 import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundException;
 import com.revolversolutions.trainingmanagement.mapper.TrainingProgramDTOMapper;
 import com.revolversolutions.trainingmanagement.repository.TrainingProgramRepository;
@@ -23,7 +21,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,9 +52,9 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     }
 
     @Override
-    public TrainingProgram getProgramEntityById(String id) {
-        TrainingProgram trainingProgram = trainingProgramRepository.findByProgramId(id)
-                .orElse(null);
+    public TrainingProgram getProgramEntityById(String programId) {
+        TrainingProgram trainingProgram = trainingProgramRepository.findByProgramId(programId)
+                .orElseThrow(() -> new ResourceNotFoundException("Program not found with id: " + programId));
         return trainingProgram;
     }
 
@@ -110,6 +110,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         programToUpdate.setDescription(programDTO.getDescription());
         programToUpdate.setDuration(programDTO.getDuration());
         programToUpdate.setFees(programDTO.getFees());
+        programToUpdate.setProgramType(programDTO.getProgramType());
 
         TrainingProgram updatedProgram = trainingProgramRepository.save(programToUpdate);
         log.info("Program with id: {} has been updated successfully", programId);
@@ -129,9 +130,69 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         trainingProgramRepository.deleteByProgramIdIn(ids);
     }
 
-    public List<FileDB> getProgramImages(Long programId){
-        TrainingProgram program = trainingProgramRepository.findById(programId)
+    @Override
+    public List<FileDB> getProgramImages(String programId){
+        TrainingProgram program = trainingProgramRepository.findByProgramId(programId)
                 .orElseThrow(()->new ResourceNotFoundException("Program not found with id " + programId));
         return program.getProgramImages();
+    }
+
+    @Override
+    public void uploadProgramImages(String userId, List<MultipartFile> files) {
+        if (files == null || files.isEmpty()) {
+            throw new IllegalArgumentException("Uploaded files list is empty or null");
+        }
+
+        TrainingProgram program = trainingProgramRepository.findByProgramId(userId)
+                .orElseThrow(() -> new RuntimeException("Program not found with userId " + userId));
+
+        List<FileDB> programImages = program.getProgramImages();
+
+        for (MultipartFile file : files) {
+            if (file == null || file.isEmpty()) {
+                throw new IllegalArgumentException("One of the uploaded files is empty or null");
+            }
+            try {
+                FileDB fileDB = storageService.store(file);
+                if (fileDB == null) {
+                    throw new RuntimeException("Error storing file, fileDB is null");
+                }
+                programImages.add(fileDB);
+            } catch (IOException e) {
+                throw new RuntimeException("Error storing file", e);
+            } catch (IllegalArgumentException e) {
+                throw new RuntimeException("Uploaded file is not a valid image", e);
+            }
+        }
+
+        trainingProgramRepository.save(program);
+    }
+
+    @Override
+    public void uploadProgramImage(String programId, MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Uploaded file is empty or null");
+        }
+
+        TrainingProgram program = trainingProgramRepository.findByProgramId(programId)
+                .orElseThrow(() -> new RuntimeException("Program not found with userId " + programId));
+
+        try {
+            FileDB fileDB = storageService.store(file);
+            if (fileDB == null) {
+                throw new RuntimeException("Error storing file, fileDB is null");
+            }
+
+            program.getProgramImages().add(fileDB);
+            trainingProgramRepository.save(program);
+
+        } catch (IOException e) {
+
+            throw new RuntimeException("Error storing file", e);
+
+        } catch (IllegalArgumentException e) {
+
+            throw new RuntimeException("Uploaded file is not a valid image", e);
+        }
     }
 }

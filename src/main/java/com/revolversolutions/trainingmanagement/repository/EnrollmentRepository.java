@@ -10,8 +10,8 @@ import java.util.Optional;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
 
-    @Query("SELECT e FROM Enrollment e WHERE e.enrollmentId.userId = ?1 AND e.enrollmentId.programId = ?2")
+    @Query("SELECT e FROM Enrollment e WHERE e.id.userId = ?1 AND e.id.programId = ?2")
     Optional<Enrollment> findByEnrollmentId_UserIdAndEnrollmentId_ProgramId(Long userId, Long programId);
 
-    boolean existsByEnrollmentId(EnrollmentId enrollmentId);
+    boolean existsById(EnrollmentId enrollmentId);
 }

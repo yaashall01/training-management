@@ -1,7 +1,7 @@
 package com.revolversolutions.trainingmanagement.entity;
 
 
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.revolversolutions.trainingmanagement.enums.UserGender;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
@@ -46,7 +46,7 @@ public class User implements UserDetails, Serializable {
     @NaturalId @Email @NotNull
     private String email;
 
-    @NaturalId
+    @Column(updatable = false)
     private String phone;
 
     @NaturalId @NotNull
@@ -55,7 +55,8 @@ public class User implements UserDetails, Serializable {
     @NotNull
     private String password;
 
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private UserGender gender;
 
     private String address;
 
@@ -78,6 +79,8 @@ public class User implements UserDetails, Serializable {
 
     @OneToMany(mappedBy = "user")
     private transient List<Enrollment> enrollments = new ArrayList<>();
+
+    //TODO : Add User Sessions ManyToMany
 
     public User(){
         this.userId = UUID.randomUUID().toString();

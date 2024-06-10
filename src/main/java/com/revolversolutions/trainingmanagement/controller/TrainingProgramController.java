@@ -4,20 +4,23 @@ import com.revolversolutions.trainingmanagement.dto.ResponseTrainingProgramPage;
 import com.revolversolutions.trainingmanagement.dto.TrainingProgramDTO;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
 import com.revolversolutions.trainingmanagement.enums.ProgramType;
+import com.revolversolutions.trainingmanagement.service.TrainingProgramService;
 import com.revolversolutions.trainingmanagement.serviceImpl.TrainingProgramServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/program")
 @AllArgsConstructor
 public class TrainingProgramController {
-    private final TrainingProgramServiceImpl trainingProgramService;
+    private final TrainingProgramService trainingProgramService;
 
     @PostMapping
     public ResponseEntity<TrainingProgramDTO> createProgram(@RequestBody TrainingProgramDTO programDTO){
@@ -62,9 +65,32 @@ public class TrainingProgramController {
     }
 
     @GetMapping("/{programId}/images")
-    public ResponseEntity<List<FileDB>> getProgramImages(@PathVariable Long programId){
+    public ResponseEntity<List<FileDB>> getProgramImages(@PathVariable String programId){
         List<FileDB> images = trainingProgramService.getProgramImages(programId);
         return ResponseEntity.ok(images);
     }
+    @PostMapping("upload/{programId}/image")
+    public ResponseEntity<String> uploadProgramImage(
+            @PathVariable String programId,
+            @RequestParam("file") MultipartFile file) {
+        try {
+            trainingProgramService.uploadProgramImage(programId, file);
+            return ResponseEntity.status(HttpStatus.OK).body("Program image uploaded successfully");
+        }catch(IOException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading program image");
+        }
+    }
+
+    @PostMapping("upload/{programId}/images")
+    public ResponseEntity<String> uploadProgramImages(@PathVariable String programId,
+                                                      @RequestParam("files") List<MultipartFile> files ){
+        try {
+            trainingProgramService.uploadProgramImages(programId, files);
+            return ResponseEntity.status(HttpStatus.OK).body("Program images uploaded successfully");
+        }catch(IOException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading program image");
+        }
+    }
+
 
 }

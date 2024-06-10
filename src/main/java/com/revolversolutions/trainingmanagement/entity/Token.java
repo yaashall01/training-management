@@ -3,7 +3,7 @@ package com.revolversolutions.trainingmanagement.entity;
 
 import jakarta.persistence.*;
 
-@Entity
+@Entity(name = "Token")
 @Table(name = "token")
 public class Token {
 

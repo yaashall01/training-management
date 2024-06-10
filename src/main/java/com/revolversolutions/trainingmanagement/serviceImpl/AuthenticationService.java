@@ -77,7 +77,7 @@ public class AuthenticationService {
 
         saveUserToken(accessToken, refreshToken, user);
 
-        // Send signup confirmation email
+        // Send signup email
         String templatePath = "templates/emailTemplate.html";
         String subject = "Welcome to Our Application!";
         String message = "Congratulations you're in now enjooy !!";

@@ -6,9 +6,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 
 @Entity(name = "Enrollment")
@@ -23,7 +26,12 @@ import java.time.LocalDateTime;
 public class Enrollment {
 
     @EmbeddedId
-    private EnrollmentId enrollmentId;
+    private EnrollmentId id;
+
+    @Column(unique = true, nullable = false, updatable = false)
+    @NaturalId
+    @GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
+    private String enrollmentId;
 
     @ManyToOne
     @MapsId("userId")
@@ -62,6 +70,14 @@ public class Enrollment {
 
     @Enumerated(EnumType.STRING)
     private EnrolmentStatus status = EnrolmentStatus.ENROLLED;
+
+    @PrePersist
+    protected void onCreate() {
+        if (enrollmentId == null) {
+            enrollmentId = UUID.randomUUID().toString();
+        }
+    }
+
 
 
     public void completedOn(){
