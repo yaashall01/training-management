@@ -79,7 +79,6 @@ public class Enrollment {
     }
 
 
-
     public void completedOn(){
         this.completedOn = LocalDateTime.now();
         this.status = EnrolmentStatus.COMPLETED;

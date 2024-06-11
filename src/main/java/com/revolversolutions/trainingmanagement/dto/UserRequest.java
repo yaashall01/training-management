@@ -48,7 +48,6 @@ public class UserRequest {
     @NotEmpty(message = "Address should not be empty")
     private String address;
 
-    @NotBlank(message = "Password must not be blank")
     @Size(min = 5, max = 20, message = "Password must be between 8 and 20 characters")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$", message = "Password must contain at least one letter and one number")
     private String password;

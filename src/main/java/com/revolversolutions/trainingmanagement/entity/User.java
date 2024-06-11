@@ -80,7 +80,9 @@ public class User implements UserDetails, Serializable {
     @OneToMany(mappedBy = "user")
     private transient List<Enrollment> enrollments = new ArrayList<>();
 
-    //TODO : Add User Sessions ManyToMany
+    @OneToMany(mappedBy = "user")
+    private transient List<Attendance> sessions = new ArrayList<>();
+
 
     public User(){
         this.userId = UUID.randomUUID().toString();

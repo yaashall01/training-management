@@ -1,17 +1,23 @@
 package com.revolversolutions.trainingmanagement.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-@Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+@Entity(name = "Session")
+@Table(name = "session")
 public class Session {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,6 +42,13 @@ public class Session {
 
     @Lob
     private String description;
+
+    @OneToMany(
+            mappedBy = "session",
+            orphanRemoval = true,
+            cascade = CascadeType.ALL
+    )
+    private List<Attendance> users = new ArrayList<>();
 
 
     @PrePersist

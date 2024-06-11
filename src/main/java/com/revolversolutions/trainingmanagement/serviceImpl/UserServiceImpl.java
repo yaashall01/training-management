@@ -107,7 +107,7 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         user.setAddress(userRequest.getAddress());
         user.setGender(userRequest.getGender());
         user.setDob(userRequest.getDob());
-        user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        //user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
 
 /*        if (userRequest.getProfileImage() != null && !userRequest.getProfileImage().isEmpty()) {
             user.setProfileImage(userRequest.getProfileImage().getBytes());
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         log.info("User updated successfully name : {}", updatedUser.getFirstName() + " "+updatedUser.getLastName());
         return userResponseDTOMapper.toDto(updatedUser);
     }
-
+    //TODO: make sure this delete user service cover an enrolled user or authenticated user !
     @Override
     public void deleteUser(String userId) {
         userRepository.deleteByUserId(userId);
@@ -245,21 +245,10 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username : " + username));
     }
 
-    /*
-    @Override
-    public void uploadProfileImage(String userId, MultipartFile file)
-            throws IOException {
-        User user = findUserById(userId);
-        user.setProfileImage(file.getBytes());
-        userRepository.save(user);
-    }
 
-    @Override
-    public byte[] getUserProfileImage(String userId) {
-        User user = findUserById(userId);
-        return user.getProfileImage();
-    }
-*/
+    //TODO: reset password service
+
+
 
 }
 
