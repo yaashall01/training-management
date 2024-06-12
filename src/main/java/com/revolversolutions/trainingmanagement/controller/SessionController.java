@@ -27,6 +27,12 @@ public class SessionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdSession);
     }
 
+    @PostMapping("/program/{programId}")
+    public ResponseEntity<SessionDTO> createSessionForProgram(@PathVariable String programId, @RequestBody SessionDTO sessionDTO){
+        SessionDTO createdSession = sessionService.createSessionForProgram(programId, sessionDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdSession);
+    }
+
     @GetMapping("/{sessionId}")
     public ResponseEntity<SessionDTO> getSession(@PathVariable String sessionId) {
             SessionDTO session = sessionService.getSessionBySessionId(sessionId);
@@ -53,7 +59,7 @@ public class SessionController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{programId}")
+    @GetMapping("/program/{programId}")
     public ResponseEntity<List<SessionDTO>> getSessionsByProgram(@PathVariable String programId){
         return ResponseEntity.ok(sessionService.getSessionsByProgram(programId));
     }

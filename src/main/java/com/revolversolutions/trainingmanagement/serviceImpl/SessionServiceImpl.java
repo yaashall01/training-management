@@ -35,6 +35,24 @@ public class SessionServiceImpl implements SessionService {
         return sessionDTOMapper.toDto(sessionRepository.save(session));
     }
 
+    @Override
+    public SessionDTO createSessionForProgram(String programId, SessionDTO sessionDTO) {
+        TrainingProgram program = trainingProgramRepository.findByProgramId(programId)
+                .orElseThrow(() -> new ResourceNotFoundException("Program not found"));
+        Session session = Session.builder()
+                .title(sessionDTO.getTitle())
+                .location(sessionDTO.getLocation())
+                .description(sessionDTO.getDescription())
+                .startTime(sessionDTO.getStartTime())
+                .endTime(sessionDTO.getEndTime())
+                .program(program)
+                .build();
+
+        session = sessionRepository.save(session);
+        log.info("Create session title: {}, for program name: {}",sessionDTO.getSessionId(), program.getTitle());
+        return sessionDTOMapper.toDto(session);
+    }
+
 
     @Override
     @Transactional

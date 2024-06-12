@@ -9,6 +9,8 @@ import java.util.List;
 public interface SessionService {
     SessionDTO createSession(SessionDTO sessionDTO);
 
+    SessionDTO createSessionForProgram(String programId, SessionDTO sessionDTO);
+
     @Transactional
     SessionDTO updateSession(String id, SessionDTO sessionDTO);
 

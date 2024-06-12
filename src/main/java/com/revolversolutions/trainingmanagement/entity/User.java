@@ -132,8 +132,4 @@ public class User implements UserDetails, Serializable {
         enrollments.remove(enrolment);
     }
 
-//    @Lob
-//    @Column(name = "profile_image", columnDefinition = "LONGBLOB")
-//    private byte[] profileImage;
-
 }

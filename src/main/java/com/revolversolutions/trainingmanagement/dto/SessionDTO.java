@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SessionDTO {
     private String sessionId;
-    private Long programId;
     private String title;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
