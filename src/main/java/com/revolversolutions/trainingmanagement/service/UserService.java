@@ -31,6 +31,8 @@ public interface UserService{
     UserResponse addAdmin(UserRequest userRequest);
 
 
+    User findUserById(String userId);
+
     User loadUserByUsername(String username) throws UsernameNotFoundException;
 
     FileDB getUserProfileImage(String userId);

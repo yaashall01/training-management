@@ -22,7 +22,7 @@ public class UserActivityController {
         this.userActivityService = userActivityService;
     }
 
-    @GetMapping("/admin/user-activities")
+    @GetMapping("/user-activities")
     public List<UserActivity> getUserActivities() {
         return userActivityService.getAllActivities();
     }

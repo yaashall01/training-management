@@ -4,8 +4,10 @@ import com.revolversolutions.trainingmanagement.dto.ResponseTrainingProgramPage;
 import com.revolversolutions.trainingmanagement.dto.TrainingProgramDTO;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
 import com.revolversolutions.trainingmanagement.entity.TrainingProgram;
+import com.revolversolutions.trainingmanagement.exception.FileStorageException;
 import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundException;
 import com.revolversolutions.trainingmanagement.mapper.TrainingProgramDTOMapper;
+import com.revolversolutions.trainingmanagement.repository.SessionRepository;
 import com.revolversolutions.trainingmanagement.repository.TrainingProgramRepository;
 import com.revolversolutions.trainingmanagement.service.TrainingProgramService;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -35,6 +37,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     private final TrainingProgramRepository trainingProgramRepository;
     private final TrainingProgramDTOMapper trainingProgramMapper;
     private final FileStorageService storageService;
+    private final SessionRepository sessionRepository;
 
     @Override
     public TrainingProgramDTO createTrainingProgram(TrainingProgramDTO programDTO) {
@@ -118,9 +121,14 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     }
 
     @Override
+    @Transactional
     public void deleteTrainingProgram(String programId) {
-    TrainingProgram programToDelete = getProgramEntityById(programId);
-    trainingProgramRepository.delete(programToDelete);
+        TrainingProgram programToDelete = getProgramEntityById(programId);
+
+        programToDelete.getSessions().forEach(session -> session.setProgram(null));
+        sessionRepository.deleteAll(programToDelete.getSessions());
+
+        trainingProgramRepository.delete(programToDelete);
         log.info("Program with id: {} has been deleted successfully", programId);
     }
 
@@ -175,12 +183,12 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         }
 
         TrainingProgram program = trainingProgramRepository.findByProgramId(programId)
-                .orElseThrow(() -> new RuntimeException("Program not found with userId " + programId));
+                .orElseThrow(() -> new ResourceNotFoundException("Program not found with userId " + programId));
 
         try {
             FileDB fileDB = storageService.store(file);
             if (fileDB == null) {
-                throw new RuntimeException("Error storing file, fileDB is null");
+                throw new FileStorageException("Error storing file, fileDB is null");
             }
 
             program.getProgramImages().add(fileDB);
@@ -188,11 +196,11 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
         } catch (IOException e) {
 
-            throw new RuntimeException("Error storing file", e);
+            throw new FileStorageException("Error storing file", e);
 
         } catch (IllegalArgumentException e) {
 
-            throw new RuntimeException("Uploaded file is not a valid image", e);
+            throw new FileStorageException("Uploaded file is not a valid image", e);
         }
     }
 }

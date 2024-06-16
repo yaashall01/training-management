@@ -7,13 +7,12 @@ import com.revolversolutions.trainingmanagement.entity.*;
 import com.revolversolutions.trainingmanagement.enums.EnrolmentStatus;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
 import com.revolversolutions.trainingmanagement.exception.AlreadyEnrolledException;
+import com.revolversolutions.trainingmanagement.exception.FileStorageException;
 import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundException;
 import com.revolversolutions.trainingmanagement.mapper.EnrollmentDTOMapper;
 import com.revolversolutions.trainingmanagement.mapper.UserRequestDTOMapper;
 import com.revolversolutions.trainingmanagement.mapper.UserResponseDTOMapper;
-import com.revolversolutions.trainingmanagement.repository.EnrollmentRepository;
-import com.revolversolutions.trainingmanagement.repository.TrainingProgramRepository;
-import com.revolversolutions.trainingmanagement.repository.UserRepository;
+import com.revolversolutions.trainingmanagement.repository.*;
 import com.revolversolutions.trainingmanagement.service.EmailService;
 import com.revolversolutions.trainingmanagement.service.UserService;
 import jakarta.mail.MessagingException;
@@ -30,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Service
@@ -46,6 +46,8 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     private final TrainingProgramRepository trainingProgramRepository;
     private final EmailService emailService;
     private final FileStorageService storageService;
+    private final TokenRepository tokenRepository;
+    private final AttendanceRepository attendanceRepository;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
@@ -55,7 +57,7 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
                            EnrollmentRepository enrollmentRepository,
                            EnrollmentDTOMapper enrollmentDTOMapper,
                            TrainingProgramRepository trainingProgramRepository,
-                           EmailService emailService, FileStorageService storageService) {
+                           EmailService emailService, FileStorageService storageService, TokenRepository tokenRepository, AttendanceRepository attendanceRepository) {
         this.userRepository = userRepository;
         this.userResponseDTOMapper = userResponseDTOMapper;
         this.userRequestDTOMapper = userRequestDTOMapper;
@@ -65,6 +67,8 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         this.trainingProgramRepository = trainingProgramRepository;
         this.emailService = emailService;
         this.storageService = storageService;
+        this.tokenRepository = tokenRepository;
+        this.attendanceRepository = attendanceRepository;
     }
 
     @Override
@@ -120,8 +124,26 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     }
     //TODO: make sure this delete user service cover an enrolled user or authenticated user !
     @Override
+    @Transactional
     public void deleteUser(String userId) {
-        userRepository.deleteByUserId(userId);
+        User deletedUser = findUserById(userId);
+
+//        if (deletedUser.getEnrollments() != null) {
+//            enrollmentRepository.deleteAll(deletedUser.getEnrollments());
+//        }
+//
+       if (deletedUser.getTokens() != null) {
+           tokenRepository.deleteAll(deletedUser.getTokens());
+        }
+//
+//        if (deletedUser.getSessions() != null) {
+//            attendanceRepository.deleteAll(deletedUser.getSessions());
+//        }
+
+        attendanceRepository.deleteByUserId(deletedUser.getId());
+
+        userRepository.delete(deletedUser);
+
         log.info("User with id : {} deleted successfully", userId);
     }
 
@@ -168,7 +190,7 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     @Override
     public void uploadUserProfileImage(String userId, MultipartFile file){
         if (file == null || file.isEmpty())
-            throw new IllegalArgumentException("Uploaded files list is empty or null");
+            throw new FileStorageException("Uploaded files list is empty or null");
 
         User user = userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with userId " + userId));
@@ -178,9 +200,9 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
             user.setProfileImage(fileDB);
             userRepository.save(user);
         } catch (IOException e) {
-            throw new RuntimeException("Error storing file", e);
+            throw new FileStorageException("Error storing file", e);
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Uploaded file is not a valid image", e);
+            throw new FileStorageException("Uploaded file is not a valid image", e);
         }
     }
 
@@ -226,9 +248,8 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         return enrollmentDTOMapper.toDto(savedEnrollment);
     }
 
-
-
-    private User findUserById(String userId) {
+    @Override
+    public User findUserById(String userId) {
         return userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + userId));
     }

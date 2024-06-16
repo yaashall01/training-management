@@ -4,6 +4,7 @@ package com.revolversolutions.trainingmanagement.entity;
 import com.revolversolutions.trainingmanagement.enums.UserGender;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
 import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -74,13 +75,13 @@ public class User implements UserDetails, Serializable {
     @OneToOne
     private FileDB profileImage;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private transient List<Token> tokens;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private transient List<Enrollment> enrollments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private transient List<Attendance> sessions = new ArrayList<>();
 
 

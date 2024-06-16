@@ -96,6 +96,12 @@ public class SessionServiceImpl implements SessionService {
         return sessionDTOMapper.toDtos(program.getSessions());
     }
 
+    @Override
+    public Session findBySessionId(String sessionId) {
+        return sessionRepository.findBySessionId(sessionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Session not found with id " + sessionId));
+    }
+
 
     //TODO : complete this
     public List<SessionDTO> getSessionsByUser(){

@@ -1,11 +1,15 @@
 package com.revolversolutions.trainingmanagement.entity;
 
 
+import com.revolversolutions.trainingmanagement.enums.AttendanceStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 
@@ -48,6 +52,17 @@ public class Attendance {
     )
     private Session session;
 
+    @Enumerated(EnumType.STRING)
+    private AttendanceStatus status;
+
+    @Lob
+    private String justification;
+
+    @CreationTimestamp
+    private LocalDateTime attendedAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     @PrePersist
     protected void onCreate() {

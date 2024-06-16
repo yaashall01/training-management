@@ -28,7 +28,7 @@ public class UserActivityAspect {
         UserActivity activity = new UserActivity();
         activity.setAction(userActivityLog.action());
         activity.setTimestamp(LocalDateTime.now());
-        // Set additional details like user ID, IP address, etc.
+        // additional details like user ID, IP address, etc.
         userActivityService.save(activity);
     }
 }

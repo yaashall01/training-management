@@ -1,6 +1,7 @@
 package com.revolversolutions.trainingmanagement.service;
 
 import com.revolversolutions.trainingmanagement.dto.SessionDTO;
+import com.revolversolutions.trainingmanagement.entity.Session;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface SessionService {
     List<SessionDTO> getAllSessions();
 
     List<SessionDTO> getSessionsByProgram(String programId);
+
+    Session findBySessionId(String sessionId);
 }

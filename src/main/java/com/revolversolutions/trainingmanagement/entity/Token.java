@@ -2,6 +2,8 @@ package com.revolversolutions.trainingmanagement.entity;
 
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity(name = "Token")
 @Table(name = "token")
@@ -21,8 +23,9 @@ public class Token {
     @Column(name = "is_logged_out")
     private boolean loggedOut;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     public Integer getId() {

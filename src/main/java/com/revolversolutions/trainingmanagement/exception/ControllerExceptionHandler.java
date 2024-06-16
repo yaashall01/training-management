@@ -61,6 +61,17 @@ public class ControllerExceptionHandler {
 
     //file exception
 
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<ErrorMessage> alreadyEnrolledException(FileStorageException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.FOUND.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
+    }
+
     //cant update username/email exception
 
 
