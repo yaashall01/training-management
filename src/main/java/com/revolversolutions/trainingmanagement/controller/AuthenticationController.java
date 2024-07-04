@@ -1,9 +1,11 @@
 package com.revolversolutions.trainingmanagement.controller;
 
 
+import com.revolversolutions.trainingmanagement.aspect.UserActivityLog;
 import com.revolversolutions.trainingmanagement.dto.AuthenticationResponse;
 import com.revolversolutions.trainingmanagement.dto.LoginUserDto;
 import com.revolversolutions.trainingmanagement.dto.RegisterUserDto;
+import com.revolversolutions.trainingmanagement.security.CustomLogoutSuccessHandler;
 import com.revolversolutions.trainingmanagement.serviceImpl.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,12 +17,16 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
 
     private final AuthenticationService authService;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
-    public AuthenticationController(AuthenticationService authService) {
+    public AuthenticationController(AuthenticationService authService, CustomLogoutSuccessHandler customLogoutSuccessHandler) {
         this.authService = authService;
+        this.customLogoutSuccessHandler = customLogoutSuccessHandler;
     }
 
+
     @PostMapping(value = {"/register", "/signup"})
+    @UserActivityLog(action = "User Registration")
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterUserDto request
     ) {
@@ -46,7 +52,6 @@ public class AuthenticationController {
     public ResponseEntity<String> logout() {
         return ResponseEntity.ok("Logged out successfully");
     }
-
 
 
 }

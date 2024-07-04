@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -84,6 +85,15 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         return userRepository.findUserByUserId(userId)
                 .map(userResponseDTOMapper::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + userId));
+    }
+
+    @Override
+    @Transactional
+    public List<EnrollmentDTO> getUserEnrollments(String userId) {
+        User user = findUserById(userId);
+        List<Enrollment> enrollments = enrollmentRepository.findByUser(user);
+        log.info("User : {}, Enrollments : {}", userId, enrollments);
+        return enrollmentDTOMapper.toDtos(enrollments);
     }
 
     @Override
@@ -219,6 +229,7 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         if (enrollmentRepository.existsById(enrollmentId)) {
             throw new AlreadyEnrolledException("User is already enrolled in this program");
         }
+        //TODO: Verify Program hierarchy, status, certificate ...
 
         Enrollment enrollment = new Enrollment();
 
@@ -265,7 +276,6 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         return userRepository.findUserByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username : " + username));
     }
-
 
     //TODO: reset password service
 

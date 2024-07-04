@@ -33,14 +33,17 @@ public class SecurityConfig {
     private final UserServiceImpl userService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomLogoutHandler logoutHandler;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
 
     public SecurityConfig(@Lazy UserServiceImpl userService,
                           JwtAuthenticationFilter jwtAuthenticationFilter,
-                          CustomLogoutHandler logoutHandler) {
+                          CustomLogoutHandler logoutHandler,
+                          CustomLogoutSuccessHandler customLogoutSuccessHandler) {
         this.userService = userService;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.logoutHandler = logoutHandler;
+        this.customLogoutSuccessHandler = customLogoutSuccessHandler;
     }
 
 
@@ -71,8 +74,7 @@ public class SecurityConfig {
                 .logout(l->l
                         .logoutUrl("/auth/logout")
                         .addLogoutHandler(logoutHandler)
-                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()
-                        ))
+                        .logoutSuccessHandler(customLogoutSuccessHandler))
                 .oauth2Login(Customizer.withDefaults())
                 .build();
     }
@@ -103,8 +105,8 @@ public class SecurityConfig {
                 .logout(l->l
                         .logoutUrl("/auth/logout")
                         .addLogoutHandler(logoutHandler)
-                        .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()
-                        ))
+                        .logoutSuccessHandler(customLogoutSuccessHandler))
+                        //.logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext()
                 .oauth2Login(Customizer.withDefaults())
                 .build();
     }

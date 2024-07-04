@@ -1,6 +1,7 @@
 package com.revolversolutions.trainingmanagement.controller;
 
 
+import com.revolversolutions.trainingmanagement.aspect.UserActivityLog;
 import com.revolversolutions.trainingmanagement.dto.SessionDTO;
 import com.revolversolutions.trainingmanagement.service.SessionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,11 +50,13 @@ public class SessionController {
 
 
     @PutMapping("/{sessionId}")
+    @UserActivityLog(action = "Session Updated")
     public ResponseEntity<SessionDTO> updateSession(@PathVariable String sessionId, @RequestBody SessionDTO sessionDTO) {
             return ResponseEntity.ok(sessionService.updateSession(sessionId, sessionDTO));
     }
 
     @DeleteMapping("/{sessionId}")
+    @UserActivityLog(action = "Session Deleted")
     public ResponseEntity<Void> deleteSession(@PathVariable String sessionId) {
         sessionService.deleteSession(sessionId);
         return ResponseEntity.noContent().build();

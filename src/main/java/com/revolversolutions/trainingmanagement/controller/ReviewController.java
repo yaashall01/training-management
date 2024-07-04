@@ -1,5 +1,6 @@
 package com.revolversolutions.trainingmanagement.controller;
 
+import com.revolversolutions.trainingmanagement.aspect.UserActivityLog;
 import com.revolversolutions.trainingmanagement.dto.ReviewDTO;
 import com.revolversolutions.trainingmanagement.serviceImpl.ReviewServiceImpl;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ public class ReviewController {
         return new ResponseEntity<>(createdReview , HttpStatus.CREATED);
     }
     @DeleteMapping("/{reviewId}")
+    @UserActivityLog(action = "Review Deleted")
     public ResponseEntity<Void> deleteProgram(@PathVariable("id") String reviewId){
         reviewService.deleteReview(reviewId);
         return ResponseEntity.noContent().build();

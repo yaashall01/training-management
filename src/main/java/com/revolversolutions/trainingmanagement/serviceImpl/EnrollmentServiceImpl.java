@@ -91,5 +91,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         enrollmentRepository.delete(enrollment);
     }
 
+    @Override
+    public EnrollmentDTO getEnrollmentByEnrollmentId(String enrollmentId) {
+        return enrollmentRepository.findEnrollmentByEnrollmentId(enrollmentId)
+                .map(enrollmentDTOMapper::toDto)
+                .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found"));
+    }
+
 
 }

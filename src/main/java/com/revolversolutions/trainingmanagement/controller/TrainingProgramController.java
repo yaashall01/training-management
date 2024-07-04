@@ -1,5 +1,6 @@
 package com.revolversolutions.trainingmanagement.controller;
 
+import com.revolversolutions.trainingmanagement.aspect.UserActivityLog;
 import com.revolversolutions.trainingmanagement.dto.ResponseTrainingProgramPage;
 import com.revolversolutions.trainingmanagement.dto.TrainingProgramDTO;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
@@ -23,6 +24,7 @@ public class TrainingProgramController {
     private final TrainingProgramService trainingProgramService;
 
     @PostMapping
+    @UserActivityLog(action = "New Program Created")
     public ResponseEntity<TrainingProgramDTO> createProgram(@RequestBody TrainingProgramDTO programDTO){
         TrainingProgramDTO createdProgram = trainingProgramService.createTrainingProgram(programDTO);
         return new ResponseEntity<>(createdProgram , HttpStatus.CREATED);
@@ -46,6 +48,7 @@ public class TrainingProgramController {
         return new ResponseEntity<>(page,HttpStatus.OK);
     }
     @PutMapping("/{id}")
+    @UserActivityLog(action = "Program Updated")
     public ResponseEntity<TrainingProgramDTO> updateProgram(
         @Valid @RequestBody TrainingProgramDTO programDTO,
         @PathVariable("id") String programId
@@ -54,11 +57,13 @@ public class TrainingProgramController {
         return new ResponseEntity<>(updatedProgram , HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
+    @UserActivityLog(action = "Program Deleted")
     public ResponseEntity<Void> deleteProgram(@PathVariable("id") String programId){
         trainingProgramService.deleteTrainingProgram(programId);
         return ResponseEntity.noContent().build();
     }
     @DeleteMapping
+    @UserActivityLog(action = "Programs Deleted")
     public ResponseEntity<Void> deleteTrainingPrograms(@RequestBody List<Long> ids){
         trainingProgramService.deleteTrainingProgramsByIds(ids);
         return ResponseEntity.noContent().build();
@@ -70,6 +75,7 @@ public class TrainingProgramController {
         return ResponseEntity.ok(images);
     }
     @PostMapping("upload/{programId}/image")
+    @UserActivityLog(action = "Image Uploaded To a Program")
     public ResponseEntity<String> uploadProgramImage(
             @PathVariable String programId,
             @RequestParam("file") MultipartFile file) {
@@ -82,6 +88,7 @@ public class TrainingProgramController {
     }
 
     @PostMapping("upload/{programId}/images")
+    @UserActivityLog(action = "Images Uploaded To a Program")
     public ResponseEntity<String> uploadProgramImages(@PathVariable String programId,
                                                       @RequestParam("files") List<MultipartFile> files ){
         try {

@@ -23,5 +23,6 @@ public class UserActivity {
     private Long id;
     private String action;
     private LocalDateTime timestamp;
-
+    private String fullName;
+    private String ipAddress;
 }

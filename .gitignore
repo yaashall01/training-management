@@ -5,7 +5,7 @@ target/
 !**/src/test/**/target/
 
 .env
-REQUEST.http
+src/main/java/com/revolversolutions/trainingmanagement/http/REQUEST.http
 ### STS ###
 .apt_generated
 .classpath

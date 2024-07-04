@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -41,14 +42,6 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
-
-    @PostMapping
-    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest){
-        UserResponse userResponse = userService.createUser(userRequest);
-        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
-
-    }
-
     @PutMapping("/{userId}")
     public ResponseEntity<UserResponse> updateUser(@PathVariable String userId, @Valid @RequestBody UserRequest userRequest)
         throws IOException{
@@ -62,22 +55,11 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/trainer")
-    public ResponseEntity<UserResponse> addTrainer(@Valid @RequestBody UserRequest userRequest){
-        UserResponse userResponse = userService.addTrainer(userRequest);
-        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
-    }
-
-    @PostMapping("/trainee")
-    public ResponseEntity<UserResponse> addTrainee(@Valid @RequestBody UserRequest userRequest){
-        UserResponse userResponse = userService.addTrainee(userRequest);
-        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
-    }
-
-    @PostMapping("/admin")
-    public ResponseEntity<UserResponse> addAdmin(@Valid @RequestBody UserRequest userRequest){
-        UserResponse userResponse = userService.addAdmin(userRequest);
-        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
+    @GetMapping("/{userId}/enrollments")
+    public ResponseEntity<List<EnrollmentDTO>> getUserEnrollments(
+            @PathVariable String userId) {
+        List<EnrollmentDTO> enrollments = userService.getUserEnrollments(userId);
+        return ResponseEntity.ok(enrollments);
     }
 
     @PostMapping("/{userId}/profile-image")
@@ -102,7 +84,6 @@ public class UserController {
         }
     }
 
-
     @GetMapping("/me")
     public ResponseEntity<UserResponse> authenticatedUser(){
 
@@ -118,7 +99,6 @@ public class UserController {
         EnrollmentDTO enrollmentDTO = userService.enrollProgram(userId, programId);
         return ResponseEntity.ok(enrollmentDTO);
     }
-
 
 
     /*

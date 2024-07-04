@@ -1,5 +1,6 @@
 package com.revolversolutions.trainingmanagement.controller;
 
+import com.revolversolutions.trainingmanagement.aspect.UserActivityLog;
 import com.revolversolutions.trainingmanagement.dto.AttendanceDTO;
 import com.revolversolutions.trainingmanagement.entity.Attendance;
 import com.revolversolutions.trainingmanagement.service.AttendanceService;
@@ -33,6 +34,7 @@ public class AttendanceController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
+    @PutMapping
     public ResponseEntity<Void> updateAttendance(@RequestBody AttendanceDTO request) {
         attendanceService.updateAttendance(
                 request.getUserId(),
@@ -44,6 +46,7 @@ public class AttendanceController {
     }
 
     @DeleteMapping("/{userId}/{sessionId}")
+    @UserActivityLog(action = "Admin Delete Attendance")
     public ResponseEntity<Void> deleteAttendance(@PathVariable String userId, @PathVariable String sessionId) {
         attendanceService.deleteAttendance(userId, sessionId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

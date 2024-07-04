@@ -74,7 +74,9 @@ public class SessionServiceImpl implements SessionService {
 
     @Override
     public void deleteSession(String id) {
-        sessionRepository.deleteBySessionId(id);
+        Session session = sessionRepository.findBySessionId(id)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no session w/ id : "+id));
+        sessionRepository.delete(session);
     }
 
     @Override

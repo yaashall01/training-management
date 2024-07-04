@@ -1,4 +1,4 @@
-package com.revolversolutions.trainingmanagement.aop;
+package com.revolversolutions.trainingmanagement.aspect;
 
 
 

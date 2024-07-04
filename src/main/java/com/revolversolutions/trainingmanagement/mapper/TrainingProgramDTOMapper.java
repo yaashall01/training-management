@@ -9,10 +9,13 @@ import java.util.List;
 
 @Component
 public class TrainingProgramDTOMapper implements EntityDTOMapper<TrainingProgram , TrainingProgramDTO>{
+
     private  ModelMapper modelMapper = new ModelMapper();
     @Override
     public TrainingProgramDTO toDto(TrainingProgram entity) {
-        return modelMapper.map(entity , TrainingProgramDTO.class);
+        TrainingProgramDTO dto = modelMapper.map(entity , TrainingProgramDTO.class);
+        dto.setEnrollmentCount(entity.getEnrollments().size());
+        return dto;
     }
 
     @Override

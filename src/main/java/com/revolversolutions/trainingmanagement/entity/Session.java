@@ -1,5 +1,6 @@
 package com.revolversolutions.trainingmanagement.entity;
 
+import com.revolversolutions.trainingmanagement.enums.SessionStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -37,6 +38,9 @@ public class Session {
     private LocalDateTime startTime;
 
     private LocalDateTime endTime;
+
+    @Enumerated(EnumType.STRING)
+    private SessionStatus status;
 
     private String location;
 

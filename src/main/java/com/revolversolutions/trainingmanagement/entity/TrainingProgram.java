@@ -1,6 +1,8 @@
 package com.revolversolutions.trainingmanagement.entity;
 
+import com.revolversolutions.trainingmanagement.aspect.TrainingProgramListener;
 import com.revolversolutions.trainingmanagement.enums.ProgramType;
+import com.revolversolutions.trainingmanagement.enums.TrainingProgramLevel;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,6 +22,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity(name = "TrainingProgram")
 @Table(name = "program")
+@EntityListeners(TrainingProgramListener.class)
 public class TrainingProgram {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,16 +46,24 @@ public class TrainingProgram {
 
     private double fees;
 
+    private boolean isActive;
+
     @Enumerated(EnumType.STRING)
     private ProgramType programType;
 
-    @ManyToOne
-    private TrainingProgram prerequisite;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private TrainingProgramLevel level;
 
-    private int position;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "prerequisite_level")
+    private TrainingProgramLevel prerequisiteLevel;
 
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @Column(nullable = false, updatable = false)
+    private String createdBy;
 
     @LastModifiedDate
     private LocalDateTime modifiedAt;
@@ -91,7 +102,6 @@ public class TrainingProgram {
             programId = UUID.randomUUID().toString();
         }
     }
-
 
     public void addEnrolment(Enrollment enrollment) {
         if (!enrollments.contains(enrollment)) {

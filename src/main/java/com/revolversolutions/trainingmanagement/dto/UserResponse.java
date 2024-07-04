@@ -1,6 +1,7 @@
 package com.revolversolutions.trainingmanagement.dto;
 
 
+import com.revolversolutions.trainingmanagement.entity.Enrollment;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
 import com.revolversolutions.trainingmanagement.enums.UserGender;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
@@ -11,6 +12,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter

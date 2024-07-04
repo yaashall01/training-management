@@ -17,4 +17,7 @@ public interface EnrollmentService {
     Page<EnrollmentDTO> getAllEnrollment(Pageable pageable);
 
     void deleteEnrollment(String userId, String programId);
+
+    EnrollmentDTO getEnrollmentByEnrollmentId(String enrollmentId);
+
 }
