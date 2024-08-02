@@ -1,12 +1,14 @@
 package com.revolversolutions.trainingmanagement.serviceImpl;
 
 
+import com.revolversolutions.trainingmanagement.dto.MailBody;
 import com.revolversolutions.trainingmanagement.service.EmailService;
 import org.springframework.core.io.ClassPathResource;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -25,7 +27,7 @@ public class EmailServiceImpl implements EmailService {
 
     private final JavaMailSender mailSender;
 
-    @Autowired
+
     public EmailServiceImpl(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
@@ -49,5 +51,16 @@ public class EmailServiceImpl implements EmailService {
         helper.setText(htmlContent, true);
 
         mailSender.send(mimeMessage);
+    }
+
+    @Override
+    public void sendSimpleEmail(MailBody mailBody) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(mailBody.to());
+        message.setFrom("noreply@revolversolutions.ma");
+        message.setSubject(mailBody.subject());
+        message.setText(mailBody.text());
+
+        mailSender.send(message);
     }
 }

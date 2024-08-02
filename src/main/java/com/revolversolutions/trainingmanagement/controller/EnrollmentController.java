@@ -4,6 +4,7 @@ package com.revolversolutions.trainingmanagement.controller;
 import com.revolversolutions.trainingmanagement.aspect.UserActivityLog;
 import com.revolversolutions.trainingmanagement.dto.EnrollmentDTO;
 import com.revolversolutions.trainingmanagement.entity.Enrollment;
+import com.revolversolutions.trainingmanagement.enums.ActionType;
 import com.revolversolutions.trainingmanagement.service.EnrollmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,7 +33,7 @@ public class EnrollmentController {
     }
 
     @PutMapping("/{userId}/{programId}")
-    @UserActivityLog(action = "Admin Delete Enrollment")
+    @UserActivityLog(action = "Admin Update Enrollment", actionType = ActionType.UPDATE)
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<EnrollmentDTO> updateEnrollment(
             @PathVariable String userId,
@@ -59,7 +60,7 @@ public class EnrollmentController {
 
     @DeleteMapping("/{userId}/{programId}")
     @PreAuthorize("hasRole('ADMIN')")
-    @UserActivityLog(action = "Admin Delete Enrollment")
+    @UserActivityLog(action = "Admin Delete Enrollment", actionType = ActionType.DELETE)
     public ResponseEntity<Void> deleteEnrollment(
             @PathVariable String userId,
             @PathVariable String programId) {

@@ -33,6 +33,7 @@ public class UserActivityAspect {
     public void logUserActivity(UserActivityLog userActivityLog) {
         UserActivity activity = new UserActivity();
         activity.setAction(userActivityLog.action());
+        activity.setActionType(userActivityLog.actionType());
         activity.setTimestamp(LocalDateTime.now());
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

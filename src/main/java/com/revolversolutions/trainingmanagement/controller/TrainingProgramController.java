@@ -4,13 +4,16 @@ import com.revolversolutions.trainingmanagement.aspect.UserActivityLog;
 import com.revolversolutions.trainingmanagement.dto.ResponseTrainingProgramPage;
 import com.revolversolutions.trainingmanagement.dto.TrainingProgramDTO;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
+import com.revolversolutions.trainingmanagement.enums.ActionType;
 import com.revolversolutions.trainingmanagement.enums.ProgramType;
 import com.revolversolutions.trainingmanagement.service.TrainingProgramService;
 import com.revolversolutions.trainingmanagement.serviceImpl.TrainingProgramServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,11 +23,12 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/program")
 @AllArgsConstructor
+@Slf4j
 public class TrainingProgramController {
     private final TrainingProgramService trainingProgramService;
 
     @PostMapping
-    @UserActivityLog(action = "New Program Created")
+    @UserActivityLog(action = "New Program Created", actionType = ActionType.CREATE)
     public ResponseEntity<TrainingProgramDTO> createProgram(@RequestBody TrainingProgramDTO programDTO){
         TrainingProgramDTO createdProgram = trainingProgramService.createTrainingProgram(programDTO);
         return new ResponseEntity<>(createdProgram , HttpStatus.CREATED);
@@ -48,7 +52,8 @@ public class TrainingProgramController {
         return new ResponseEntity<>(page,HttpStatus.OK);
     }
     @PutMapping("/{id}")
-    @UserActivityLog(action = "Program Updated")
+    @UserActivityLog(action = "Program Updated", actionType = ActionType.UPDATE)
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TrainingProgramDTO> updateProgram(
         @Valid @RequestBody TrainingProgramDTO programDTO,
         @PathVariable("id") String programId
@@ -57,13 +62,13 @@ public class TrainingProgramController {
         return new ResponseEntity<>(updatedProgram , HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
-    @UserActivityLog(action = "Program Deleted")
+    @UserActivityLog(action = "Program Deleted", actionType = ActionType.DELETE)
     public ResponseEntity<Void> deleteProgram(@PathVariable("id") String programId){
         trainingProgramService.deleteTrainingProgram(programId);
         return ResponseEntity.noContent().build();
     }
     @DeleteMapping
-    @UserActivityLog(action = "Programs Deleted")
+    @UserActivityLog(action = "Programs Deleted", actionType = ActionType.DELETE)
     public ResponseEntity<Void> deleteTrainingPrograms(@RequestBody List<Long> ids){
         trainingProgramService.deleteTrainingProgramsByIds(ids);
         return ResponseEntity.noContent().build();
@@ -75,7 +80,7 @@ public class TrainingProgramController {
         return ResponseEntity.ok(images);
     }
     @PostMapping("upload/{programId}/image")
-    @UserActivityLog(action = "Image Uploaded To a Program")
+    @UserActivityLog(action = "Image Uploaded To a Program", actionType = ActionType.UPDATE)
     public ResponseEntity<String> uploadProgramImage(
             @PathVariable String programId,
             @RequestParam("file") MultipartFile file) {
@@ -88,7 +93,7 @@ public class TrainingProgramController {
     }
 
     @PostMapping("upload/{programId}/images")
-    @UserActivityLog(action = "Images Uploaded To a Program")
+    @UserActivityLog(action = "Images Uploaded To a Program", actionType = ActionType.UPDATE)
     public ResponseEntity<String> uploadProgramImages(@PathVariable String programId,
                                                       @RequestParam("files") List<MultipartFile> files ){
         try {

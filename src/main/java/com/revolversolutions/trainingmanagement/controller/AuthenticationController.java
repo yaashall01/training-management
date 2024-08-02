@@ -5,6 +5,7 @@ import com.revolversolutions.trainingmanagement.aspect.UserActivityLog;
 import com.revolversolutions.trainingmanagement.dto.AuthenticationResponse;
 import com.revolversolutions.trainingmanagement.dto.LoginUserDto;
 import com.revolversolutions.trainingmanagement.dto.RegisterUserDto;
+import com.revolversolutions.trainingmanagement.enums.ActionType;
 import com.revolversolutions.trainingmanagement.security.CustomLogoutSuccessHandler;
 import com.revolversolutions.trainingmanagement.serviceImpl.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,7 +27,7 @@ public class AuthenticationController {
 
 
     @PostMapping(value = {"/register", "/signup"})
-    @UserActivityLog(action = "User Registration")
+    @UserActivityLog(action = "User Registration", actionType = ActionType.REGISTER)
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterUserDto request
     ) {

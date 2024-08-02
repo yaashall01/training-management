@@ -47,7 +47,7 @@ public class User implements UserDetails, Serializable {
     @NaturalId @Email @NotNull
     private String email;
 
-    @Column(updatable = false)
+    @Column(unique = true)
     private String phone;
 
     @NaturalId @NotNull
@@ -81,6 +81,9 @@ public class User implements UserDetails, Serializable {
             orphanRemoval = true
     )
     private transient List<Token> tokens;
+
+    @OneToOne(mappedBy = "user")
+    private ForgotPassword forgotPassword;
 
     @OneToMany(
             mappedBy = "user",

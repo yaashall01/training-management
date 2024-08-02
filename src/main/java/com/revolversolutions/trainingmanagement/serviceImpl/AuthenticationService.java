@@ -7,6 +7,7 @@ import com.revolversolutions.trainingmanagement.dto.RegisterUserDto;
 import com.revolversolutions.trainingmanagement.entity.Token;
 import com.revolversolutions.trainingmanagement.entity.User;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
+import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundException;
 import com.revolversolutions.trainingmanagement.repository.TokenRepository;
 import com.revolversolutions.trainingmanagement.repository.UserRepository;
 import com.revolversolutions.trainingmanagement.security.JwtService;
@@ -57,7 +58,11 @@ public class AuthenticationService {
 
         // check if user already exist. if exist than authenticate the user
         if(userRepository.findUserByUserName(request.getUsername()).isPresent()) {
-            return new AuthenticationResponse(null, null,"User already exist");
+            return new AuthenticationResponse(null, null,"Username already taken");
+        }
+
+        if(userRepository.findByEmail(request.getEmail()).isPresent()) {
+            return new AuthenticationResponse(null, null,"Email already used");
         }
 
         User user = new User();
@@ -101,12 +106,14 @@ public class AuthenticationService {
     public AuthenticationResponse authenticate(LoginUserDto request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getUsername(),
+                        request.getIdentifier(),
                         request.getPassword()
                 )
         );
 
-        User user = userRepository.findUserByUserName(request.getUsername()).orElseThrow();
+        User user = userRepository.findByEmail(request.getIdentifier())
+                .orElseGet(() -> userRepository.findUserByUserName(request.getIdentifier()).orElseThrow());
+
         String accessToken = jwtService.generateAccessToken(user);
         String refreshToken = jwtService.generateRefreshToken(user);
 
@@ -120,6 +127,7 @@ public class AuthenticationService {
     public ResponseEntity refreshToken(
             HttpServletRequest request,
             HttpServletResponse response) {
+
         // extract the token from authorization header
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
@@ -130,10 +138,10 @@ public class AuthenticationService {
         String token = authHeader.substring(7);
 
         // extract username from token
-        String username = jwtService.extractUsername(token);
+        String email = jwtService.extractEmail(token);
 
         // check if the user exist in database
-        User user = userRepository.findUserByUserName(username)
+        User user = userRepository.findByEmail(email)
                 .orElseThrow(()->new RuntimeException("No user found"));
 
         // check if the token is valid

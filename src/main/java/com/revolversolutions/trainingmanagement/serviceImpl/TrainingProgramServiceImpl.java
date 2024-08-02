@@ -107,6 +107,7 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
     @Override
     public TrainingProgramDTO updateTrainingProgram(String programId , TrainingProgramDTO programDTO) {
+
         TrainingProgram programToUpdate = getProgramEntityById(programId);
         programToUpdate.setTitle(programDTO.getTitle());
         programToUpdate.setContent(programDTO.getContent());
@@ -114,6 +115,9 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
         programToUpdate.setDuration(programDTO.getDuration());
         programToUpdate.setFees(programDTO.getFees());
         programToUpdate.setProgramType(programDTO.getProgramType());
+        programToUpdate.setActive(programDTO.isActive());
+        programToUpdate.setAddress(programDTO.getAddress());
+        programToUpdate.setPrerequisiteLevel(programDTO.getPrerequisiteLevel());
 
         TrainingProgram updatedProgram = trainingProgramRepository.save(programToUpdate);
         log.info("Program with id: {} has been updated successfully", programId);

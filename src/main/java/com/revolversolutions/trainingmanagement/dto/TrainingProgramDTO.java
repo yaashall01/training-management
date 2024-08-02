@@ -24,6 +24,7 @@ public class TrainingProgramDTO {
     private String content;
     private int enrollmentCount;
     private double fees;
+    private String address;
     private TrainingProgramLevel level;
     private TrainingProgramLevel prerequisiteLevel;
     private String createdBy;

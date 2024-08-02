@@ -33,14 +33,18 @@ public class JwtService {
         this.tokenRepository = tokenRepository;
     }
 
+    public String extractEmail(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+
     /**
      * Extract username from the token
      * @param token
      * @return String
      */
-
     public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+        return extractClaim(token, claims -> claims.get("username", String.class));
     }
 
     /**
@@ -52,13 +56,14 @@ public class JwtService {
 
     public boolean isValid(String token, User user) {
         String username = extractUsername(token);
+        String email = extractEmail(token);
 
         boolean validToken = tokenRepository
                 .findByAccessToken(token)
                 .map(t -> !t.isLoggedOut())
                 .orElse(false);
 
-        return (username.equals(user.getUsername())) && !isTokenExpired(token) && validToken;
+        return (email.equals(user.getEmail())|| username.equals(user.getUsername())) && !isTokenExpired(token) && validToken;
     }
 
 
@@ -70,13 +75,14 @@ public class JwtService {
      */
     public boolean isValidRefreshToken(String token, User user) {
         String username = extractUsername(token);
+        String email = extractEmail(token);
 
         boolean validRefreshToken = tokenRepository
                 .findByRefreshToken(token)
                 .map(t -> !t.isLoggedOut())
                 .orElse(false);
 
-        return (username.equals(user.getUsername())) && !isTokenExpired(token) && validRefreshToken;
+        return (email.equals(user.getEmail()) || username.equals(user.getUsername())) && !isTokenExpired(token) && validRefreshToken;
     }
 
     /**
@@ -136,9 +142,9 @@ public class JwtService {
     private String generateToken(User user, long expireTime){
         String token = Jwts
                 .builder()
-                .subject(user.getUsername())
+                .subject(user.getEmail())
                 .claim("role", user.getUserRole())
-                .claim("email", user.getEmail())
+                .claim("username", user.getUserName())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expireTime))
                 .signWith(getSigningKey())

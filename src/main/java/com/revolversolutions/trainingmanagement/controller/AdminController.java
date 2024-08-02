@@ -5,6 +5,7 @@ import com.revolversolutions.trainingmanagement.aspect.UserActivityLog;
 import com.revolversolutions.trainingmanagement.dto.UserRequest;
 import com.revolversolutions.trainingmanagement.dto.UserResponse;
 import com.revolversolutions.trainingmanagement.entity.UserActivity;
+import com.revolversolutions.trainingmanagement.enums.ActionType;
 import com.revolversolutions.trainingmanagement.service.UserService;
 import com.revolversolutions.trainingmanagement.serviceImpl.UserActivityService;
 import jakarta.validation.Valid;
@@ -32,7 +33,7 @@ public class AdminController {
     }
 
     @PostMapping("/create-user")
-    @UserActivityLog(action = "Admin Create a User")
+    @UserActivityLog(action = "Admin Create a User", actionType = ActionType.CREATE)
     public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRequest userRequest){
         UserResponse userResponse = userService.createUser(userRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
@@ -40,7 +41,7 @@ public class AdminController {
     }
 
     @PutMapping("/{userId}")
-    @UserActivityLog(action = "Admin Update a User")
+    @UserActivityLog(action = "Admin Update a User", actionType = ActionType.UPDATE)
     public ResponseEntity<UserResponse> updateUser(@PathVariable String userId, @Valid @RequestBody UserRequest userRequest)
             throws IOException {
         UserResponse userResponse = userService.updateUser(userId, userRequest);
@@ -48,28 +49,28 @@ public class AdminController {
     }
 
     @PostMapping("/trainer")
-    @UserActivityLog(action = "Admin Create a Trainer")
+    @UserActivityLog(action = "Admin Create a Trainer", actionType = ActionType.CREATE)
     public ResponseEntity<UserResponse> addTrainer(@Valid @RequestBody UserRequest userRequest){
         UserResponse userResponse = userService.addTrainer(userRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
 
     @PostMapping("/trainee")
-    @UserActivityLog(action = "Admin Create a Trainee")
+    @UserActivityLog(action = "Admin Create a Trainee", actionType = ActionType.CREATE)
     public ResponseEntity<UserResponse> addTrainee(@Valid @RequestBody UserRequest userRequest){
         UserResponse userResponse = userService.addTrainee(userRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
 
     @PostMapping("/create-admin")
-    @UserActivityLog(action = "Admin Create new Admin")
+    @UserActivityLog(action = "Admin Create new Admin", actionType = ActionType.CREATE)
     public ResponseEntity<UserResponse> addAdmin(@Valid @RequestBody UserRequest userRequest){
         UserResponse userResponse = userService.addAdmin(userRequest);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{userId}")
-    @UserActivityLog(action = "Admin Delete User")
+    @UserActivityLog(action = "Admin Delete User", actionType = ActionType.DELETE)
     public ResponseEntity<Void> deleteUser(@PathVariable String userId){
         userService.deleteUser(userId);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -272,11 +272,21 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
                 });
     }
 
-    public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findUserByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username : " + username));
+    public User loadUserByUsername(String identifier) throws UsernameNotFoundException {
+        User user = userRepository.findUserByEmail(identifier);
+        if(user == null){
+            user = userRepository.findByUserName(identifier);
+        }
+        if (user == null){
+            throw new UsernameNotFoundException("User not found with email or username: " + identifier);
+        }
+        return user;
+
     }
 
+
+   // return userRepository.findByEmail(email)
+//                .orElseThrow(() -> new UsernameNotFoundException("User not found with email : " + email));
     //TODO: reset password service
 
 

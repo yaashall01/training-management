@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(h->h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("/","/auth/**", "/refresh_token/**", "/confirm-account/**", "/swagger-ui/**", "/v3/api-docs/**")
+                        req -> req.requestMatchers("/","/auth/**", "/refresh_token/**","/forgot-password/**",  "/confirm-account/**", "/swagger-ui/**", "/v3/api-docs/**")
                                 //requestMatchers("**")
                                 .permitAll()
                 )
