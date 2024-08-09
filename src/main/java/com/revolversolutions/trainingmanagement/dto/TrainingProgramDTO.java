@@ -1,5 +1,6 @@
 package com.revolversolutions.trainingmanagement.dto;
 
+import com.revolversolutions.trainingmanagement.entity.Address;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
 import com.revolversolutions.trainingmanagement.enums.ProgramType;
 import com.revolversolutions.trainingmanagement.enums.TrainingProgramLevel;
@@ -24,14 +25,16 @@ public class TrainingProgramDTO {
     private String content;
     private int enrollmentCount;
     private double fees;
-    private String address;
+    private Address address;
     private TrainingProgramLevel level;
     private TrainingProgramLevel prerequisiteLevel;
     private String createdBy;
     private boolean isActive;
+    private UserResponse trainer;
     private LocalDateTime createdAt;
     private ProgramType programType;
     private List<ReviewDTO> reviews;
     private List<FileDB> programImages;
     private List<SessionDTO> sessions;
+    private LogisticDTO logistics;
 }

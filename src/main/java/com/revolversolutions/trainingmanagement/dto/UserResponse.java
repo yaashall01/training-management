@@ -1,6 +1,7 @@
 package com.revolversolutions.trainingmanagement.dto;
 
 
+import com.revolversolutions.trainingmanagement.entity.Address;
 import com.revolversolutions.trainingmanagement.entity.Enrollment;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
 import com.revolversolutions.trainingmanagement.enums.UserGender;
@@ -28,7 +29,7 @@ public class UserResponse {
     private String email;
     private String phone;
     private UserGender gender;
-    private String address;
+    private Address address;
     private LocalDate dob;
     private LocalDateTime createdAt;
     private UserRole userRole;

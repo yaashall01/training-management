@@ -3,12 +3,16 @@ package com.revolversolutions.trainingmanagement.serviceImpl;
 import com.revolversolutions.trainingmanagement.dto.ResponseTrainingProgramPage;
 import com.revolversolutions.trainingmanagement.dto.TrainingProgramDTO;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
+import com.revolversolutions.trainingmanagement.entity.Logistic;
 import com.revolversolutions.trainingmanagement.entity.TrainingProgram;
+import com.revolversolutions.trainingmanagement.entity.User;
 import com.revolversolutions.trainingmanagement.exception.FileStorageException;
 import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundException;
 import com.revolversolutions.trainingmanagement.mapper.TrainingProgramDTOMapper;
+import com.revolversolutions.trainingmanagement.repository.LogisticRepository;
 import com.revolversolutions.trainingmanagement.repository.SessionRepository;
 import com.revolversolutions.trainingmanagement.repository.TrainingProgramRepository;
+import com.revolversolutions.trainingmanagement.repository.UserRepository;
 import com.revolversolutions.trainingmanagement.service.TrainingProgramService;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -35,9 +39,11 @@ import java.util.stream.Collectors;
 public class TrainingProgramServiceImpl implements TrainingProgramService {
 
     private final TrainingProgramRepository trainingProgramRepository;
+    private final LogisticRepository logisticRepository;
     private final TrainingProgramDTOMapper trainingProgramMapper;
     private final FileStorageService storageService;
     private final SessionRepository sessionRepository;
+    private final UserRepository userRepository;
 
     @Override
     public TrainingProgramDTO createTrainingProgram(TrainingProgramDTO programDTO) {
@@ -206,5 +212,36 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
             throw new FileStorageException("Uploaded file is not a valid image", e);
         }
+    }
+
+    @Override
+    public TrainingProgramDTO assignLogisticsToTrainingProgram(String trainingProgramId, String logisticsId) {
+        TrainingProgram trainingProgram = trainingProgramRepository.findByProgramId(trainingProgramId)
+                .orElseThrow(() -> new ResourceNotFoundException("TrainingProgram not found"));
+        Logistic logistics = logisticRepository.findByLogisticsId(logisticsId)
+                .orElseThrow(() -> new ResourceNotFoundException("Logistics not found"));
+
+        trainingProgram.setLogistics(logistics);
+        return trainingProgramMapper.toDto(trainingProgramRepository.save(trainingProgram));
+    }
+
+    @Override
+    public TrainingProgramDTO removeLogisticsFromTrainingProgram(String trainingProgramId){
+        TrainingProgram trainingProgram = trainingProgramRepository.findByProgramId(trainingProgramId)
+                .orElseThrow(() -> new ResourceNotFoundException("TrainingProgram not found"));
+        trainingProgram.setLogistics(null);
+
+        return trainingProgramMapper.toDto(trainingProgramRepository.save(trainingProgram));
+    }
+
+    @Override
+    public TrainingProgramDTO assignTrainerToProgram(String programId, String trainerId) {
+        TrainingProgram trainingProgram = trainingProgramRepository.findByProgramId(programId)
+                .orElseThrow(() -> new ResourceNotFoundException("TrainingProgram not found"));
+        User trainer = userRepository.findUserByUserId(trainerId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + trainerId));
+
+        trainingProgram.setTrainer(trainer);
+        return trainingProgramMapper.toDto(trainingProgramRepository.save(trainingProgram));
     }
 }

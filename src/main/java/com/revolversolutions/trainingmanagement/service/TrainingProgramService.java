@@ -27,4 +27,10 @@ public interface TrainingProgramService {
     void uploadProgramImages(String userId, List<MultipartFile> files) throws IOException;
 
     void uploadProgramImage(String userId, MultipartFile file) throws IOException;
+
+    TrainingProgramDTO assignLogisticsToTrainingProgram(String trainingProgramId, String logisticsId);
+
+    TrainingProgramDTO removeLogisticsFromTrainingProgram(String trainingProgramId);
+
+    TrainingProgramDTO assignTrainerToProgram(String programId, String trainerId);
 }

@@ -36,6 +36,17 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(OTPException.class)
+    public ResponseEntity<ErrorMessage> otpException(OTPException ex, WebRequest request){
+        ErrorMessage message = new ErrorMessage(
+                HttpStatus.EXPECTATION_FAILED.value(),
+                new Date(),
+                ex.getMessage(),
+                request.getDescription(false));
+
+        return new ResponseEntity<>(message, HttpStatus.EXPECTATION_FAILED);
+    }
+
     @ExceptionHandler(AlreadyEnrolledException.class)
     public ResponseEntity<ErrorMessage> alreadyEnrolledException(AlreadyEnrolledException ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(

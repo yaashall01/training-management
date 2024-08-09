@@ -4,6 +4,7 @@ import com.revolversolutions.trainingmanagement.aspect.UserActivityLog;
 import com.revolversolutions.trainingmanagement.dto.ResponseTrainingProgramPage;
 import com.revolversolutions.trainingmanagement.dto.TrainingProgramDTO;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
+import com.revolversolutions.trainingmanagement.entity.TrainingProgram;
 import com.revolversolutions.trainingmanagement.enums.ActionType;
 import com.revolversolutions.trainingmanagement.enums.ProgramType;
 import com.revolversolutions.trainingmanagement.service.TrainingProgramService;
@@ -104,5 +105,21 @@ public class TrainingProgramController {
         }
     }
 
+    @PostMapping("/{trainingProgramId}/assign-logistics/{logisticsId}")
+    public ResponseEntity<TrainingProgramDTO> assignLogisticsToTrainingProgram(@PathVariable String trainingProgramId, @PathVariable String logisticsId) {
+        TrainingProgramDTO trainingProgram = trainingProgramService.assignLogisticsToTrainingProgram(trainingProgramId, logisticsId);
+        return ResponseEntity.ok(trainingProgram);
+    }
 
+    @PostMapping("/clear-logistics/{trainingProgramId}")
+    public ResponseEntity<TrainingProgramDTO> removeLogisticsFromTrainingProgram(@PathVariable String trainingProgramId) {
+        TrainingProgramDTO trainingProgram = trainingProgramService.removeLogisticsFromTrainingProgram(trainingProgramId);
+        return ResponseEntity.ok(trainingProgram);
+    }
+
+    @PostMapping("/{programId}/assign-trainer/{trainerId}")
+    public ResponseEntity<TrainingProgramDTO> assignTrainerToProgram(@PathVariable String programId, @PathVariable String trainerId){
+        TrainingProgramDTO trainingProgram = trainingProgramService.assignTrainerToProgram(programId, trainerId);
+        return ResponseEntity.ok(trainingProgram);
+    }
 }

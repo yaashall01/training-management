@@ -1,5 +1,6 @@
 package com.revolversolutions.trainingmanagement.dto;
 
+import com.revolversolutions.trainingmanagement.entity.Address;
 import com.revolversolutions.trainingmanagement.enums.UserGender;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
 import jakarta.persistence.EnumType;
@@ -45,8 +46,7 @@ public class UserRequest {
     @Enumerated(EnumType.STRING)
     private UserGender gender;
 
-    @NotEmpty(message = "Address should not be empty")
-    private String address;
+    private Address address;
 
     @Size(min = 5, max = 20, message = "Password must be between 8 and 20 characters")
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]+$", message = "Password must contain at least one letter and one number")

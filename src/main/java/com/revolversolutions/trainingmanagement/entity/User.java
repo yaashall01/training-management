@@ -59,7 +59,8 @@ public class User implements UserDetails, Serializable {
     @Enumerated(EnumType.STRING)
     private UserGender gender;
 
-    private String address;
+    @Embedded
+    private Address address;
 
     private LocalDate dob;
 

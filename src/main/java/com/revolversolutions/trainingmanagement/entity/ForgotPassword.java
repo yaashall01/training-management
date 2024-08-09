@@ -2,15 +2,12 @@ package com.revolversolutions.trainingmanagement.entity;
 
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
 @Entity
-@NoArgsConstructor@AllArgsConstructor@Builder@Getter
+@NoArgsConstructor@AllArgsConstructor@Builder@Getter@Setter
 public class ForgotPassword {
 
     @Id

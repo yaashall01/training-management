@@ -1,97 +1,61 @@
 package com.revolversolutions.trainingmanagement.controller;
 
 
-import com.revolversolutions.trainingmanagement.dto.MailBody;
-import com.revolversolutions.trainingmanagement.entity.ForgotPassword;
-import com.revolversolutions.trainingmanagement.entity.User;
+import com.revolversolutions.trainingmanagement.dto.OTPResponse;
 import com.revolversolutions.trainingmanagement.enums.ChangePassword;
-import com.revolversolutions.trainingmanagement.repository.ForgotPasswordRepository;
-import com.revolversolutions.trainingmanagement.repository.UserRepository;
-import com.revolversolutions.trainingmanagement.service.EmailService;
+import com.revolversolutions.trainingmanagement.serviceImpl.ForgotPasswordService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.Instant;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Random;
 
 @RestController
 @RequestMapping("forgot-password")
+@Slf4j
 public class ForgotPasswordController {
 
-    private final UserRepository userRepository;
-    private final EmailService emailService;
-    private final ForgotPasswordRepository forgotPasswordRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final ForgotPasswordService forgotPasswordService;
 
-    public ForgotPasswordController(UserRepository userRepository, EmailService emailService, ForgotPasswordRepository forgotPasswordRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.emailService = emailService;
-        this.forgotPasswordRepository = forgotPasswordRepository;
-        this.passwordEncoder = passwordEncoder;
+    public ForgotPasswordController(ForgotPasswordService forgotPasswordService) {
+        this.forgotPasswordService = forgotPasswordService;
     }
-
 
     @PostMapping("/verify-email/{email}")
-    public ResponseEntity<String> verifyEmail(@PathVariable String email){
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Please provide a valid email"));
-
-
-        int otp = otpGenerator();
-        MailBody mailBody = MailBody.builder()
-                .to(email)
-                .text("This the OTP for your forgot password request " + otp)
-                .subject("OTP - Forgot Password Request")
-                .build();
-
-        ForgotPassword fp = ForgotPassword.builder()
-                .otp(otp)
-                .expirationTime(new Date(System.currentTimeMillis() + 70 * 1000))
-                .user(user)
-                .build();
-
-        emailService.sendSimpleEmail(mailBody);
-        forgotPasswordRepository.save(fp);
-
-        return ResponseEntity.ok("Email sent for verification");
+    public ResponseEntity<?> verifyEmail(@PathVariable String email) {
+        log.info("Request received to verify email: {}", email);
+        try {
+            OTPResponse response = forgotPasswordService.verifyEmail(email);
+            log.info("Verification email sent to: {}", email);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("Error verifying email: {}", email, e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
-
 
     @PostMapping("/verify-otp/{otp}/{email}")
-    public ResponseEntity<String> verifyOtp(@PathVariable Integer otp, @PathVariable String email){
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Please provide a valid email"));
-
-        ForgotPassword fp = forgotPasswordRepository.findByOtpAndUser(otp, user)
-                .orElseThrow(() -> new RuntimeException("Invalid OTP for email : " + email));
-
-        if (fp.getExpirationTime().before(Date.from(Instant.now()))) {
-            forgotPasswordRepository.deleteById(fp.getFpid());
-            return new ResponseEntity<>( "OTP has expired!", HttpStatus.EXPECTATION_FAILED);
+    public ResponseEntity<?> verifyOtp(@PathVariable Integer otp, @PathVariable String email) {
+        log.info("Request received to verify OTP for email: {}", email);
+        try {
+            forgotPasswordService.verifyOtp(otp, email);
+            log.info("OTP verified for email: {}", email);
+            return ResponseEntity.ok(new OTPResponse("OTP verified!", email));
+        } catch (Exception e) {
+            log.error("Error verifying OTP for email: {}", email, e);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.EXPECTATION_FAILED);
         }
-
-        return ResponseEntity.ok("OTP verified !");
     }
-
 
     @PostMapping("/change-password/{email}")
-    public ResponseEntity<String> changePasswordHandler(@PathVariable String email, @RequestBody ChangePassword changePassword){
-            if (!Objects.equals(changePassword.password(), changePassword.repeatPassword())){
-                return new ResponseEntity<>("Please enter password again !", HttpStatus.EXPECTATION_FAILED);
-            }
-            String encodedPassword = passwordEncoder.encode(changePassword.password());
-            userRepository.updatePassword(email, encodedPassword);
-            return ResponseEntity.ok("Password has been changed ");
-    }
-
-
-    private Integer otpGenerator(){
-        Random random = new Random();
-        return random.nextInt(100_000, 999_999);
+    public ResponseEntity<OTPResponse> changePasswordHandler(@PathVariable String email, @RequestBody ChangePassword changePassword) {
+        log.info("Request received to change password for email: {}", email);
+        try {
+            forgotPasswordService.changePassword(email, changePassword);
+            log.info("Password changed for email: {}", email);
+            return ResponseEntity.ok(new OTPResponse("Password has been changed", email));
+        } catch (Exception e) {
+            log.error("Error changing password for email: {}", email, e);
+            return new ResponseEntity<>(new OTPResponse("Error changing password for email", email), HttpStatus.EXPECTATION_FAILED);
+        }
     }
 }

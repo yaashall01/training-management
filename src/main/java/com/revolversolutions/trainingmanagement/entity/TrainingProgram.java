@@ -42,7 +42,8 @@ public class TrainingProgram {
     @Lob
     private String content;
 
-    private String address;
+    @Embedded
+    private Address address;
 
     private double fees;
 
@@ -88,6 +89,19 @@ public class TrainingProgram {
             cascade = CascadeType.ALL
     )
     private List<Enrollment> enrollments = new ArrayList<>();
+
+    @OneToOne(
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    @JoinColumn(
+            name = "logistics_id",
+            referencedColumnName = "id"
+    )
+    private Logistic logistics;
+
+    @OneToOne
+    private User trainer;
 
     @OneToMany
     private List<FileDB> programImages = new ArrayList<>();
