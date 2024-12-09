@@ -1,8 +1,8 @@
 package com.revolversolutions.trainingmanagement.service;
 
 import com.revolversolutions.trainingmanagement.dto.EnrollmentDTO;
-import com.revolversolutions.trainingmanagement.dto.UserRequest;
-import com.revolversolutions.trainingmanagement.dto.UserResponse;
+import com.revolversolutions.trainingmanagement.dto.user.UserRequest;
+import com.revolversolutions.trainingmanagement.dto.user.UserResponse;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
 import com.revolversolutions.trainingmanagement.entity.User;
 import org.springframework.data.domain.Page;

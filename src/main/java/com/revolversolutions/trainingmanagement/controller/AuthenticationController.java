@@ -2,9 +2,9 @@ package com.revolversolutions.trainingmanagement.controller;
 
 
 import com.revolversolutions.trainingmanagement.aspect.UserActivityLog;
-import com.revolversolutions.trainingmanagement.dto.AuthenticationResponse;
-import com.revolversolutions.trainingmanagement.dto.LoginUserDto;
-import com.revolversolutions.trainingmanagement.dto.RegisterUserDto;
+import com.revolversolutions.trainingmanagement.dto.user.AuthenticationResponse;
+import com.revolversolutions.trainingmanagement.dto.user.LoginUserDto;
+import com.revolversolutions.trainingmanagement.dto.user.RegisterUserDto;
 import com.revolversolutions.trainingmanagement.enums.ActionType;
 import com.revolversolutions.trainingmanagement.security.CustomLogoutSuccessHandler;
 import com.revolversolutions.trainingmanagement.serviceImpl.AuthenticationService;

@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 public enum UserRole {
 
-    ADMIN("Admin"),
-    TRAINER("Trainer"),
-    TRAINEE("Trainee");
+    ROLE_ADMIN( "Admin"),
+    ROLE_TRAINER("Trainer"),
+    ROLE_TRAINEE("Trainee");
 
     private final String role;
 
@@ -16,4 +16,8 @@ public enum UserRole {
         this.role = role;
     }
 
+    @Override
+    public String toString() {
+        return this.role;
+    }
 }

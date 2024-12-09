@@ -1,4 +1,4 @@
-package com.revolversolutions.trainingmanagement.dto;
+package com.revolversolutions.trainingmanagement.dto.user;
 
 
 import com.revolversolutions.trainingmanagement.entity.Address;

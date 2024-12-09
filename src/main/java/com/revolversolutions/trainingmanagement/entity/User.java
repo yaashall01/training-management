@@ -147,14 +147,6 @@ public class User implements UserDetails, Serializable {
         return true;
     }
 
-    public void addEnrolment(Enrollment enrolment) {
-        if (!enrollments.contains(enrolment)) {
-            enrollments.add(enrolment);
-        }
-    }
 
-    public void removeEnrolment(Enrollment enrolment) {
-        enrollments.remove(enrolment);
-    }
 
 }

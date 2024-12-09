@@ -2,8 +2,8 @@ package com.revolversolutions.trainingmanagement.controller;
 
 
 import com.revolversolutions.trainingmanagement.aspect.UserActivityLog;
-import com.revolversolutions.trainingmanagement.dto.UserRequest;
-import com.revolversolutions.trainingmanagement.dto.UserResponse;
+import com.revolversolutions.trainingmanagement.dto.user.UserRequest;
+import com.revolversolutions.trainingmanagement.dto.user.UserResponse;
 import com.revolversolutions.trainingmanagement.entity.UserActivity;
 import com.revolversolutions.trainingmanagement.enums.ActionType;
 import com.revolversolutions.trainingmanagement.service.UserService;
@@ -12,7 +12,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -20,7 +19,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin")
-@PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
     private final UserActivityService userActivityService;

@@ -1,5 +1,6 @@
 package com.revolversolutions.trainingmanagement.dto;
 
+import com.revolversolutions.trainingmanagement.dto.user.UserResponse;
 import com.revolversolutions.trainingmanagement.entity.Address;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
 import com.revolversolutions.trainingmanagement.enums.ProgramType;

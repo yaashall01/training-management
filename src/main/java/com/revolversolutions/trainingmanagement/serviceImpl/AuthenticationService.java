@@ -1,13 +1,12 @@
 package com.revolversolutions.trainingmanagement.serviceImpl;
 
 
-import com.revolversolutions.trainingmanagement.dto.AuthenticationResponse;
-import com.revolversolutions.trainingmanagement.dto.LoginUserDto;
-import com.revolversolutions.trainingmanagement.dto.RegisterUserDto;
+import com.revolversolutions.trainingmanagement.dto.user.AuthenticationResponse;
+import com.revolversolutions.trainingmanagement.dto.user.LoginUserDto;
+import com.revolversolutions.trainingmanagement.dto.user.RegisterUserDto;
 import com.revolversolutions.trainingmanagement.entity.Token;
 import com.revolversolutions.trainingmanagement.entity.User;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
-import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundException;
 import com.revolversolutions.trainingmanagement.repository.TokenRepository;
 import com.revolversolutions.trainingmanagement.repository.UserRepository;
 import com.revolversolutions.trainingmanagement.security.JwtService;
@@ -73,7 +72,7 @@ public class AuthenticationService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
 
-        user.setUserRole(UserRole.TRAINEE);
+        user.setUserRole(UserRole.ROLE_TRAINEE);
 
         user = userRepository.save(user);
 

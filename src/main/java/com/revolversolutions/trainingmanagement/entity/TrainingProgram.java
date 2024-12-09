@@ -120,7 +120,7 @@ public class TrainingProgram {
     public void addEnrolment(Enrollment enrollment) {
         if (!enrollments.contains(enrollment)) {
             enrollments.add(enrollment);
-        }
+        }   
     }
     public void removeEnrolment(Enrollment enrollment) {
         enrollments.remove(enrollment);

@@ -3,6 +3,7 @@ package com.revolversolutions.trainingmanagement.controller;
 
 import com.revolversolutions.trainingmanagement.entity.Faq;
 import com.revolversolutions.trainingmanagement.serviceImpl.FaqService;
+import jakarta.annotation.security.PermitAll;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,15 +18,19 @@ public class FaqController {
 
     private final FaqService faqService;
 
+
     public FaqController(FaqService faqService) {
         this.faqService = faqService;
     }
+
 
     @GetMapping
     public ResponseEntity<List<Faq>> getAllFaqs() {
         List<Faq> faqs = faqService.getAllFaqs();
         return new ResponseEntity<>(faqs, HttpStatus.OK);
     }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Faq> getFaqById(@PathVariable Integer id) {

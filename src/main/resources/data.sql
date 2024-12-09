@@ -1,19 +1,19 @@
 -- Insert Users
 INSERT INTO users (user_id, first_name, last_name, email, phone, user_name, password, gender, dob, created_at, update_at, user_role)
 VALUES
-    (UUID(), 'John', 'Doe', 'john.doe@example.com', '1234567890', 'johndoe', 'password123', 'male', '1990-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TRAINEE'),
-    (UUID(), 'Jane', 'Doe', 'jane.doe@example.com', '0987654321', 'janedoe', 'password456', 'female', '1995-02-02', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TRAINER'),
-    (UUID(), 'Bob', 'Smith', 'bob.smith@example.com', '1122334455', 'bobsmith', 'password789', 'male', '1985-03-03', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TRAINEE'),
-    (UUID(), 'Yassine', 'CHALH', 'yassinechalh9@gmail.com', '0673151392', 'yaashall', '$2a$10$GNFcjBjNw9T1jfn1P4ALRe.vol9.u2wtB9aKpd.e8fdgeBW3jyo2e', 'male', '1985-03-03', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ADMIN'),
-    (UUID(), 'Rida', 'EL Ayadi', 'reelayadi@gmail.com', '156334455', 'reelayadi', '$2a$10$GNFcjBjNw9T1jfn1P4ALRe.vol9.u2wtB9aKpd.e8fdgeBW3jyo2e', 'male', '1985-03-03', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ADMIN'),
-    (UUID(), 'Abderrahim', 'React', 'adbdolasvegas@gmail.com', '0022334455', 'abdoabdo', '$2a$10$GNFcjBjNw9T1jfn1P4ALRe.vol9.u2wtB9aKpd.e8fdgeBW3jyo2e', 'male', '1985-03-03', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ADMIN'),
-    (UUID(), 'Alice', 'Johnson', 'alice.johnson@example.com', '2233445566', 'alicejohnson', 'password123', 'female', '1988-04-04', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TRAINEE'),
-    (UUID(), 'Charlie', 'Brown', 'charlie.brown@example.com', '3344556677', 'charliebrown', 'password456', 'male', '1992-05-05', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TRAINER'),
-    (UUID(), 'David', 'Williams', 'david.williams@example.com', '4455667788', 'davidwilliams', 'password789', 'male', '1986-06-06', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TRAINEE'),
-    (UUID(), 'Emma', 'Jones', 'emma.jones@example.com', '5566778899', 'emmajones', 'password123', 'female', '1991-07-07', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TRAINEE'),
-    (UUID(), 'Frank', 'Miller', 'frank.miller@example.com', '6677889900', 'frankmiller', 'password456', 'male', '1989-08-08', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TRAINER'),
-    (UUID(), 'Grace', 'Davis', 'grace.davis@example.com', '7788990011', 'gracedavis', 'password789', 'female', '1993-09-09', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TRAINEE'),
-    (UUID(), 'Henry', 'Wilson', 'henry.wilson@example.com', '8899001122', 'henrywilson', 'password123', 'male', '1987-10-10', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'TRAINEE');
+    (UUID(), 'John', 'Doe', 'john.doe@example.com', '1234567890', 'johndoe', 'password123', 'male', '1990-01-01', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ROLE_TRAINEE'),
+    (UUID(), 'Jane', 'Doe', 'jane.doe@example.com', '0987654321', 'janedoe', 'password456', 'female', '1995-02-02', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ROLE_TRAINER'),
+    (UUID(), 'Bob', 'Smith', 'bob.smith@example.com', '1122334455', 'bobsmith', 'password789', 'male', '1985-03-03', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ROLE_TRAINEE'),
+    (UUID(), 'Yassine', 'CHALH', 'yassinechalh9@gmail.com', '0673151392', 'yaashall', '$2a$10$GNFcjBjNw9T1jfn1P4ALRe.vol9.u2wtB9aKpd.e8fdgeBW3jyo2e', 'male', '1985-03-03', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ROLE_ADMIN'),
+    (UUID(), 'Rida', 'EL Ayadi', 'reelayadi@gmail.com', '156334455', 'reelayadi', '$2a$10$GNFcjBjNw9T1jfn1P4ALRe.vol9.u2wtB9aKpd.e8fdgeBW3jyo2e', 'male', '1985-03-03', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ROLE_ADMIN'),
+    (UUID(), 'Abderrahim', 'React', 'adbdolasvegas@gmail.com', '0022334455', 'abdoabdo', '$2a$10$GNFcjBjNw9T1jfn1P4ALRe.vol9.u2wtB9aKpd.e8fdgeBW3jyo2e', 'male', '1985-03-03', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ROLE_ADMIN'),
+    (UUID(), 'Alice', 'Johnson', 'alice.johnson@example.com', '2233445566', 'alicejohnson', 'password123', 'female', '1988-04-04', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ROLE_TRAINEE'),
+    (UUID(), 'Charlie', 'Brown', 'charlie.brown@example.com', '3344556677', 'charliebrown', 'password456', 'male', '1992-05-05', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ROLE_TRAINER'),
+    (UUID(), 'David', 'Williams', 'david.williams@example.com', '4455667788', 'davidwilliams', 'password789', 'male', '1986-06-06', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ROLE_TRAINEE'),
+    (UUID(), 'Emma', 'Jones', 'emma.jones@example.com', '5566778899', 'emmajones', 'password123', 'female', '1991-07-07', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ROLE_TRAINEE'),
+    (UUID(), 'Frank', 'Miller', 'frank.miller@example.com', '6677889900', 'frankmiller', 'password456', 'male', '1989-08-08', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ROLE_TRAINER'),
+    (UUID(), 'Grace', 'Davis', 'grace.davis@example.com', '7788990011', 'gracedavis', 'password789', 'female', '1993-09-09', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ROLE_TRAINEE'),
+    (UUID(), 'Henry', 'Wilson', 'henry.wilson@example.com', '8899001122', 'henrywilson', 'password123', 'male', '1987-10-10', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'ROLE_TRAINEE');
 -- Insert Programs
 INSERT INTO program (program_id, title, description, duration, content, street, city, state, country, zip_code, fees, program_type, is_active, created_by) VALUES
                                                                                                                                                                (UUID(), 'Beginner Yoga', 'An introduction to yoga basics.', 60, 'Yoga basics content', '123 Yoga Street', 'City', 'State', 'Country', '11000', 50.00, 'COURSE', true, 'Kaoutar'),

@@ -9,6 +9,7 @@ import com.revolversolutions.trainingmanagement.enums.ActionType;
 import com.revolversolutions.trainingmanagement.enums.ProgramType;
 import com.revolversolutions.trainingmanagement.service.TrainingProgramService;
 import com.revolversolutions.trainingmanagement.serviceImpl.TrainingProgramServiceImpl;
+import jakarta.annotation.security.PermitAll;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +40,8 @@ public class TrainingProgramController {
         TrainingProgramDTO programDTO = trainingProgramService.getTrainingProgramById(programId);
         return new ResponseEntity<>(programDTO , HttpStatus.OK);
     }
+
+
     @GetMapping
     public ResponseEntity<ResponseTrainingProgramPage> getPrograms(
         @RequestParam(name = "pageIndex" ,defaultValue = "0" ,required = false) int pageNo,
@@ -52,6 +55,8 @@ public class TrainingProgramController {
         ResponseTrainingProgramPage page = trainingProgramService.getAllTrainingPrograms(pageNo,pageSize,sortBy,sortDir,term , programType);
         return new ResponseEntity<>(page,HttpStatus.OK);
     }
+
+
     @PutMapping("/{id}")
     @UserActivityLog(action = "Program Updated", actionType = ActionType.UPDATE)
     @PreAuthorize("hasRole('ADMIN')")

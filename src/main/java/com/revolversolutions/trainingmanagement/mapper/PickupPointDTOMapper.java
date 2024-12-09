@@ -1,6 +1,6 @@
 package com.revolversolutions.trainingmanagement.mapper;
 
-import com.revolversolutions.trainingmanagement.dto.PickupPointDTO;
+import com.revolversolutions.trainingmanagement.dto.logistic.PickupPointDTO;
 import com.revolversolutions.trainingmanagement.entity.PickupPoint;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

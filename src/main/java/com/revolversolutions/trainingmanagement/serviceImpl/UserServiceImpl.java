@@ -1,8 +1,8 @@
 package com.revolversolutions.trainingmanagement.serviceImpl;
 
 import com.revolversolutions.trainingmanagement.dto.EnrollmentDTO;
-import com.revolversolutions.trainingmanagement.dto.UserRequest;
-import com.revolversolutions.trainingmanagement.dto.UserResponse;
+import com.revolversolutions.trainingmanagement.dto.user.UserRequest;
+import com.revolversolutions.trainingmanagement.dto.user.UserResponse;
 import com.revolversolutions.trainingmanagement.entity.*;
 import com.revolversolutions.trainingmanagement.enums.EnrolmentStatus;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
@@ -30,7 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Service
@@ -161,7 +160,7 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     public UserResponse addTrainer(UserRequest userRequest) {
         getUserByEmailOrPhone(userRequest.getEmail(), userRequest.getPhone());
         User user = userRequestDTOMapper.toEntity(userRequest);
-        user.setUserRole(UserRole.TRAINER);
+        user.setUserRole(UserRole.ROLE_TRAINER);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         User newUser = userRepository.save(user);
         log.info("User created successfully name : {}", newUser.getFirstName());
@@ -172,7 +171,7 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     public UserResponse addTrainee(UserRequest userRequest) {
         getUserByEmailOrPhone(userRequest.getEmail(), userRequest.getPhone());
         User user = userRequestDTOMapper.toEntity(userRequest);
-        user.setUserRole(UserRole.TRAINEE);
+        user.setUserRole(UserRole.ROLE_TRAINEE);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         User newUser = userRepository.save(user);
         log.info("User created successfully name : {}", newUser.getFirstName());
@@ -183,7 +182,7 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     public UserResponse addAdmin(UserRequest userRequest) {
         getUserByEmailOrPhone(userRequest.getEmail(), userRequest.getPhone());
         User user = userRequestDTOMapper.toEntity(userRequest);
-        user.setUserRole(UserRole.ADMIN);
+        user.setUserRole(UserRole.ROLE_ADMIN);
         user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         User newUser = userRepository.save(user);
         log.info("User created successfully name : {}", newUser.getFirstName());

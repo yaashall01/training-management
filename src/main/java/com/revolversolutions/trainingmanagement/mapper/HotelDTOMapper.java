@@ -1,7 +1,7 @@
 package com.revolversolutions.trainingmanagement.mapper;
 
 
-import com.revolversolutions.trainingmanagement.dto.HotelDTO;
+import com.revolversolutions.trainingmanagement.dto.logistic.HotelDTO;
 import com.revolversolutions.trainingmanagement.entity.Hotel;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;

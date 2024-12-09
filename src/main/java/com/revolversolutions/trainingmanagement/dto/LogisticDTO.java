@@ -1,6 +1,9 @@
 package com.revolversolutions.trainingmanagement.dto;
 
 
+import com.revolversolutions.trainingmanagement.dto.logistic.HotelDTO;
+import com.revolversolutions.trainingmanagement.dto.logistic.PickupPointDTO;
+import com.revolversolutions.trainingmanagement.dto.logistic.TransportDTO;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

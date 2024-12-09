@@ -36,7 +36,7 @@ public class SecurityConfig {
     private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
 
 
-    public SecurityConfig(@Lazy UserServiceImpl userService,
+    public SecurityConfig(@Lazy UserServiceImpl  userService,
                           JwtAuthenticationFilter jwtAuthenticationFilter,
                           CustomLogoutHandler logoutHandler,
                           CustomLogoutSuccessHandler customLogoutSuccessHandler) {
@@ -55,11 +55,10 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(h->h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("/","/auth/**", "/refresh_token/**","/forgot-password/**",  "/confirm-account/**", "/swagger-ui/**", "/v3/api-docs/**")
-                                //requestMatchers("**")
+                        req -> req.requestMatchers("/public/**", "/swagger-ui/**", "/v3/api-docs/**")
                                 .permitAll()
                 )
-                .authorizeHttpRequests(ar -> ar.requestMatchers("/admin/**").hasAuthority("ADMIN")
+                .authorizeHttpRequests(ar -> ar.requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(userService)
@@ -86,11 +85,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(h->h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(
-                        req -> req.//requestMatchers("/","/auth/**", "/refresh_token/**", "/confirm-account/**", "/swagger-ui/**", "/v3/api-docs/**")
-                                requestMatchers("**")
+                        req -> req.requestMatchers("/api/v1/public/**", "/","/auth/**","/swagger-ui/**", "/v3/api-docs/**")
+                                //.requestMatchers(**)
                                 .permitAll()
                 )
-                .authorizeHttpRequests(ar -> ar.requestMatchers("/admin/**").hasAuthority("ADMIN")
+                .authorizeHttpRequests(ar -> ar.requestMatchers("/api/v1/admin/**").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated()
                 )
                 .userDetailsService(userService)

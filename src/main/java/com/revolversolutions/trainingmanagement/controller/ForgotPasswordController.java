@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("forgot-password")
+@RequestMapping("/api/v1/public/forgot-password")
 @Slf4j
 public class ForgotPasswordController {
 

@@ -1,4 +1,4 @@
-package com.revolversolutions.trainingmanagement.dto;
+package com.revolversolutions.trainingmanagement.dto.logistic;
 
 import lombok.Getter;
 import lombok.Setter;

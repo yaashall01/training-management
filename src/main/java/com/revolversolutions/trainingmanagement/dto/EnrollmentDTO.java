@@ -1,9 +1,7 @@
 package com.revolversolutions.trainingmanagement.dto;
 
 
-import com.revolversolutions.trainingmanagement.entity.EnrollmentId;
-import com.revolversolutions.trainingmanagement.entity.TrainingProgram;
-import com.revolversolutions.trainingmanagement.entity.User;
+import com.revolversolutions.trainingmanagement.dto.user.UserResponse;
 import com.revolversolutions.trainingmanagement.enums.EnrolmentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
