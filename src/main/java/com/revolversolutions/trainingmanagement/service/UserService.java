@@ -1,6 +1,7 @@
 package com.revolversolutions.trainingmanagement.service;
 
 import com.revolversolutions.trainingmanagement.dto.EnrollmentDTO;
+import com.revolversolutions.trainingmanagement.dto.ImageMetadataDTO;
 import com.revolversolutions.trainingmanagement.dto.user.UserRequest;
 import com.revolversolutions.trainingmanagement.dto.user.UserResponse;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
@@ -16,6 +17,12 @@ import java.util.List;
 
 public interface UserService{
     Page<UserResponse> getAllUsers(Pageable pageable);
+
+    Page<UserResponse> getAllTrainers(Pageable pageable);
+
+    Page<UserResponse> getAllAdmins(Pageable pageable);
+
+    Page<UserResponse> getAllTrainees(Pageable pageable);
 
     UserResponse getUserById(String userId);
 
@@ -42,6 +49,12 @@ public interface UserService{
     void uploadUserProfileImage(String userId, MultipartFile file) throws IOException;
 
     EnrollmentDTO enrollProgram(String userId, String programId);
+
+    long  getCountUsers();
+
+    ImageMetadataDTO uploadProfilePicture(String userId, MultipartFile file);
+    ImageMetadataDTO getProfilePicture(String userId);
+
 
 
     //void uploadProfileImage(String userId, MultipartFile file)

@@ -16,7 +16,6 @@ public class HotelDTOMapper implements EntityDTOMapper<Hotel, HotelDTO>{
     }
 
 
-
     @Override
     public HotelDTO toDto(Hotel entity) {
         return modelMapper.map(entity, HotelDTO.class);

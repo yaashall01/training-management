@@ -95,5 +95,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Enrollment not found"));
     }
 
+    @Override
+    public long getCountEnrollments() {
+        return enrollmentRepository.count();
+    }
+
 
 }

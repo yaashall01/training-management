@@ -7,9 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 
-public interface LogisticRepository extends JpaRepository<Logistic, Long> {
+public interface LogisticRepository extends JpaRepository<Logistic, String> {
 
     Optional<Logistic> findByLogisticsId(String id);
 
-    void deleteByLogisticsId(String id);
 }

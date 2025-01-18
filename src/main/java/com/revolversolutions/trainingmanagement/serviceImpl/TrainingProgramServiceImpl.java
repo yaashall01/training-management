@@ -1,5 +1,6 @@
 package com.revolversolutions.trainingmanagement.serviceImpl;
 
+import com.revolversolutions.trainingmanagement.dto.ImageMetadataDTO;
 import com.revolversolutions.trainingmanagement.dto.ResponseTrainingProgramPage;
 import com.revolversolutions.trainingmanagement.dto.TrainingProgramDTO;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
@@ -8,6 +9,7 @@ import com.revolversolutions.trainingmanagement.entity.TrainingProgram;
 import com.revolversolutions.trainingmanagement.entity.User;
 import com.revolversolutions.trainingmanagement.exception.FileStorageException;
 import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundException;
+import com.revolversolutions.trainingmanagement.mapper.ImageMetadataDTOMapper;
 import com.revolversolutions.trainingmanagement.mapper.TrainingProgramDTOMapper;
 import com.revolversolutions.trainingmanagement.repository.LogisticRepository;
 import com.revolversolutions.trainingmanagement.repository.SessionRepository;
@@ -30,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +47,8 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
     private final FileStorageService storageService;
     private final SessionRepository sessionRepository;
     private final UserRepository userRepository;
+    private final ImageMetadataServiceImpl imageMetadataService;
+    private final ImageMetadataDTOMapper imageMetadataDTOMapper;
 
     @Override
     public TrainingProgramDTO createTrainingProgram(TrainingProgramDTO programDTO) {
@@ -243,5 +248,32 @@ public class TrainingProgramServiceImpl implements TrainingProgramService {
 
         trainingProgram.setTrainer(trainer);
         return trainingProgramMapper.toDto(trainingProgramRepository.save(trainingProgram));
+    }
+
+    @Override
+    public long  getCountPrograms() {
+        return trainingProgramRepository.count();
+    }
+
+    @Transactional
+    @Override
+    public List<ImageMetadataDTO> uploadGalleryImages(String programId, List<MultipartFile> files) throws IOException {
+        if (files == null || files.isEmpty()) {
+            throw new IllegalArgumentException("File list cannot be null or empty");
+        }
+
+        TrainingProgram trainingProgram = trainingProgramRepository.findByProgramId(programId)
+                .orElseThrow(() -> new ResourceNotFoundException("Program not found with id: " + programId));
+
+        List<ImageMetadataDTO> uploadedImages = imageMetadataService.uploadImageMultiple(files);
+
+        if (uploadedImages != null || !uploadedImages.isEmpty()) {
+            trainingProgram.setGallery(imageMetadataDTOMapper.toEntities(uploadedImages));
+            trainingProgramRepository.save(trainingProgram);
+            return uploadedImages;
+        }else{
+            log.warn("No images were uploaded for program ID: {}", programId);
+        }
+        return List.of();
     }
 }

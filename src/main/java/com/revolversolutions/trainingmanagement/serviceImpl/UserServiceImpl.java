@@ -1,6 +1,7 @@
 package com.revolversolutions.trainingmanagement.serviceImpl;
 
 import com.revolversolutions.trainingmanagement.dto.EnrollmentDTO;
+import com.revolversolutions.trainingmanagement.dto.ImageMetadataDTO;
 import com.revolversolutions.trainingmanagement.dto.user.UserRequest;
 import com.revolversolutions.trainingmanagement.dto.user.UserResponse;
 import com.revolversolutions.trainingmanagement.entity.*;
@@ -10,6 +11,7 @@ import com.revolversolutions.trainingmanagement.exception.AlreadyEnrolledExcepti
 import com.revolversolutions.trainingmanagement.exception.FileStorageException;
 import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundException;
 import com.revolversolutions.trainingmanagement.mapper.EnrollmentDTOMapper;
+import com.revolversolutions.trainingmanagement.mapper.ImageMetadataDTOMapper;
 import com.revolversolutions.trainingmanagement.mapper.UserRequestDTOMapper;
 import com.revolversolutions.trainingmanagement.mapper.UserResponseDTOMapper;
 import com.revolversolutions.trainingmanagement.repository.*;
@@ -48,6 +50,8 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     private final FileStorageService storageService;
     private final TokenRepository tokenRepository;
     private final AttendanceRepository attendanceRepository;
+    private final ImageMetadataServiceImpl imageMetadataService;
+    private final ImageMetadataDTOMapper imageMetadataDTOMapper;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
@@ -57,7 +61,7 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
                            EnrollmentRepository enrollmentRepository,
                            EnrollmentDTOMapper enrollmentDTOMapper,
                            TrainingProgramRepository trainingProgramRepository,
-                           EmailService emailService, FileStorageService storageService, TokenRepository tokenRepository, AttendanceRepository attendanceRepository) {
+                           EmailService emailService, FileStorageService storageService, TokenRepository tokenRepository, AttendanceRepository attendanceRepository, ImageMetadataServiceImpl imageMetadataService, ImageMetadataDTOMapper imageMetadataDTOMapper) {
         this.userRepository = userRepository;
         this.userResponseDTOMapper = userResponseDTOMapper;
         this.userRequestDTOMapper = userRequestDTOMapper;
@@ -69,6 +73,8 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         this.storageService = storageService;
         this.tokenRepository = tokenRepository;
         this.attendanceRepository = attendanceRepository;
+        this.imageMetadataService = imageMetadataService;
+        this.imageMetadataDTOMapper = imageMetadataDTOMapper;
     }
 
     @Override
@@ -77,6 +83,27 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
         Page<User> users = userRepository.findAll(pageable);
         log.info("Fetched all users");
         return users.map(userResponseDTOMapper::toDto);
+    }
+
+    public Page<UserResponse> getAllTrainers(Pageable pageable) {
+        log.info("Fetching all users");
+        Page<User> trainers = userRepository.findAllByUserRole(UserRole.ROLE_TRAINER, pageable);
+        log.info("Fetched all trainers");
+        return trainers.map(userResponseDTOMapper::toDto);
+    }
+
+    public Page<UserResponse> getAllAdmins(Pageable pageable) {
+        log.info("Fetching all users");
+        Page<User> trainers = userRepository.findAllByUserRole(UserRole.ROLE_ADMIN, pageable);
+        log.info("Fetched all Admins");
+        return trainers.map(userResponseDTOMapper::toDto);
+    }
+
+    public Page<UserResponse> getAllTrainees(Pageable pageable) {
+        log.info("Fetching all users");
+        Page<User> trainers = userRepository.findAllByUserRole(UserRole.ROLE_TRAINEE, pageable);
+        log.info("Fetched all trainees");
+        return trainers.map(userResponseDTOMapper::toDto);
     }
 
     @Override
@@ -259,6 +286,11 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
     }
 
     @Override
+    public long getCountUsers() {
+        return userRepository.count();
+    }
+
+    @Override
     public User findUserById(String userId) {
         return userRepository.findUserByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id : " + userId));
@@ -283,11 +315,41 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
 
     }
 
+    @Override
+    @Transactional
+    public ImageMetadataDTO uploadProfilePicture(String userId, MultipartFile file) {
+        if (file == null || file.isEmpty())
+            throw new FileStorageException("Uploaded files list is empty or null");
 
-   // return userRepository.findByEmail(email)
+        User user = userRepository.findUserByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId " + userId));
+
+        // Delete Old ImageMetaData id exist
+
+        if (user.getImageMetadata() != null) {
+            imageMetadataService.deleteImage(user.getImageMetadata().getImageMetadataId());
+        }
+
+        ImageMetadataDTO image =  imageMetadataService.uploadImageMetadata(file);
+
+        user.setImageMetadata(imageMetadataDTOMapper.toEntity(image));
+        userRepository.save(user);
+
+        return image;
+    }
+
+    @Override
+    @Transactional
+    public ImageMetadataDTO getProfilePicture(String userId) {
+        User user = userRepository.findUserByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId " + userId));
+        return imageMetadataDTOMapper.toDto(user.getImageMetadata());
+    }
+
+
+    // return userRepository.findByEmail(email)
 //                .orElseThrow(() -> new UsernameNotFoundException("User not found with email : " + email));
     //TODO: reset password service
-
 
 
 }

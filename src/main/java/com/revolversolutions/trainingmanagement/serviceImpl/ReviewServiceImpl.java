@@ -3,6 +3,7 @@ package com.revolversolutions.trainingmanagement.serviceImpl;
 import com.revolversolutions.trainingmanagement.dto.ReviewDTO;
 import com.revolversolutions.trainingmanagement.entity.Review;
 import com.revolversolutions.trainingmanagement.entity.TrainingProgram;
+import com.revolversolutions.trainingmanagement.entity.User;
 import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundException;
 import com.revolversolutions.trainingmanagement.mapper.ReviewDTOMpper;
 import com.revolversolutions.trainingmanagement.repository.ReviewRepository;
@@ -21,14 +22,22 @@ public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final TrainingProgramRepository programRepository;
+    private final UserServiceImpl userService;
     private final ReviewDTOMpper reviewDTOMpper;
 
 
     @Override
-    public ReviewDTO createReview(String programId, ReviewDTO reviewDTO) {
+    public List<ReviewDTO> getAllReviews() {
+        return reviewDTOMpper.toDtos(reviewRepository.findAll());
+    }
+
+    @Override
+    public ReviewDTO createReview(String programId, String userId , ReviewDTO reviewDTO) {
         Review newReview = reviewDTOMpper.toEntity(reviewDTO);
         TrainingProgram trainingProgram = programRepository.findByProgramId(programId)
                         .orElseThrow((() -> new ResourceNotFoundException("Can't found program with id : " + programId)));
+        User reviewer = userService.findUserById(userId);
+        newReview.setUser(reviewer);
         newReview.setProgram(trainingProgram);
         Review savedReview = reviewRepository.save(newReview);
         log.info("Review created successfully");

@@ -67,4 +67,10 @@ public class EnrollmentController {
         enrollmentService.deleteEnrollment(userId, programId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/count")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Long> gelCount(){
+        return ResponseEntity.ok(enrollmentService.getCountEnrollments());
+    }
 }

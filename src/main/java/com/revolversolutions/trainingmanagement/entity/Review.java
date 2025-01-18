@@ -23,6 +23,10 @@ public class Review {
     @JoinColumn(name = "program_id")
     private TrainingProgram program;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     private double rating;
 
     private String content;

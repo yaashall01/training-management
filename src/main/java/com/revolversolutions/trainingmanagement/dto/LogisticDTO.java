@@ -16,6 +16,7 @@ import java.util.List;
 public class LogisticDTO {
 
     private String logisticsId;
+    private String name;
     private List<HotelDTO> hotels;
     private List<PickupPointDTO> pickupPoints;
     private List<TransportDTO> transports;

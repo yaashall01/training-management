@@ -2,11 +2,15 @@ package com.revolversolutions.trainingmanagement.repository;
 
 
 import com.revolversolutions.trainingmanagement.entity.User;
+import com.revolversolutions.trainingmanagement.enums.UserRole;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,6 +21,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByUserId(String userId);
 
     Optional<User> findByEmail(String email);
+
+    Page<User> findAllByUserRole(UserRole role, Pageable pageable);
+
+    List<User> findAllByUserRole(UserRole role);
+
 
     @Transactional
     @Modifying

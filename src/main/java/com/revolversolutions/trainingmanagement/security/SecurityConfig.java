@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(h->h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("/public/**", "/swagger-ui/**", "/v3/api-docs/**")
+                        req -> req.requestMatchers("/public/**", "/swagger-ui/**", "/v3/api-docs/**" , "/ws-notifications/**", "/topic/notifications/**")
                                 .permitAll()
                 )
                 .authorizeHttpRequests(ar -> ar.requestMatchers("/admin/**").hasAuthority("ROLE_ADMIN")
@@ -85,7 +85,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .headers(h->h.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(
-                        req -> req.requestMatchers("/api/v1/public/**", "/","/auth/**","/swagger-ui/**", "/v3/api-docs/**")
+                        req -> req.requestMatchers("/api/v1/public/**", "/","/auth/**","/swagger-ui/**", "/v3/api-docs/**" , "/ws-notifications/**", "/topic/notifications/**")
                                 //.requestMatchers(**)
                                 .permitAll()
                 )
@@ -115,7 +115,7 @@ public class SecurityConfig {
     CorsConfigurationSource corsConfigurationSource() { // configuration de CORS pour autoriser les requetes depuis n'importe quelle origine
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("*")); // autoriser les requetes depuis n'importe quelle origine
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // autoriser les requetes de n'importe quelle methode (GET, POST, PUT, DELETE, etc.)
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")); // autoriser les requetes de n'importe quelle methode (GET, POST, PUT, DELETE, etc.)
         configuration.setAllowedHeaders(Arrays.asList("*")); // autoriser les requetes avec n'importe quelle entete
         configuration.setExposedHeaders(Arrays.asList("*")); // autoriser les entetes exposees dans la reponse
 

@@ -1,5 +1,6 @@
 package com.revolversolutions.trainingmanagement.dto.logistic;
 
+import com.revolversolutions.trainingmanagement.entity.Address;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,12 +16,15 @@ public class HotelDTO {
 
     private double priceDouble;
 
-    private String address;
+    private Address address;
 
     private String website;
 
     private String email;
 
     private String phone;
+
+    private boolean isActive;
+
 
 }

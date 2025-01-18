@@ -10,15 +10,12 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @Entity(name = "Hotel")
 @Table(name = "hotel")
 public class Hotel {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @Column(unique = true, nullable = false, updatable = false)
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String hotelId;
 
     private String name;
@@ -27,7 +24,8 @@ public class Hotel {
 
     private double priceDouble;
 
-    private String address;
+    @Embedded
+    private Address address;
 
     private String website;
 
@@ -35,14 +33,12 @@ public class Hotel {
 
     private String phone;
 
-    public Hotel() {
-        this.hotelId = UUID.randomUUID().toString();
-    }
+    private boolean isActive;
 
-    @PrePersist
-    public void generateHotelId() {
-        if (this.hotelId == null) {
-            this.hotelId = UUID.randomUUID().toString();
-        }
-    }
+    @ManyToOne
+    @JoinColumn(name = "logistics_id", insertable = false, updatable = false)
+    private Logistic logistics;
+
+
+
 }

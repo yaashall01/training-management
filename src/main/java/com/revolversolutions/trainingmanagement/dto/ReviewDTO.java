@@ -1,5 +1,6 @@
 package com.revolversolutions.trainingmanagement.dto;
 
+import com.revolversolutions.trainingmanagement.dto.user.UserReview;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,5 +14,6 @@ public class ReviewDTO {
     private String reviewId;
     private String content;
     private double rating;
-    private String username;
+    private UserReview user;
+
 }

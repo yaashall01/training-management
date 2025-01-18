@@ -22,10 +22,10 @@ public class ReviewController {
         this.reviewService = reviewService;
     }
 
-    @PostMapping("/{programId}")
+    @PostMapping("/{programId}/{userId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ReviewDTO> createReviewForProgram(@PathVariable String programId , @RequestBody ReviewDTO reviewDTO){
-        ReviewDTO createdReview = reviewService.createReview(programId, reviewDTO);
+    public ResponseEntity<ReviewDTO> createReviewForProgram(@PathVariable String programId , @PathVariable String userId , @RequestBody ReviewDTO reviewDTO){
+        ReviewDTO createdReview = reviewService.createReview(programId, userId , reviewDTO);
         return new ResponseEntity<>(createdReview , HttpStatus.CREATED);
     }
     @DeleteMapping("/{reviewId}")

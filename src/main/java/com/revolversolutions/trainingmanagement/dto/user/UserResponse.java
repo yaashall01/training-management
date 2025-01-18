@@ -4,6 +4,7 @@ package com.revolversolutions.trainingmanagement.dto.user;
 import com.revolversolutions.trainingmanagement.entity.Address;
 import com.revolversolutions.trainingmanagement.entity.Enrollment;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
+import com.revolversolutions.trainingmanagement.entity.ImageMetadata;
 import com.revolversolutions.trainingmanagement.enums.UserGender;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
 import lombok.AllArgsConstructor;
@@ -34,5 +35,6 @@ public class UserResponse {
     private LocalDateTime createdAt;
     private UserRole userRole;
     private FileDB profileImage;
+    private ImageMetadata imageMetadata;
 
 }

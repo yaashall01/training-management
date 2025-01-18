@@ -11,31 +11,20 @@ import java.util.UUID;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @Entity(name = "Transport")
 @Table(name = "transport")
 public class Transport {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true, nullable = false, updatable = false)
-    @NaturalId
-    @GenericGenerator(name="uuid", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String transportId;
 
     private String type;
 
+    private String driver;
+
     private String details;
 
-    public Transport() {
-        this.transportId = UUID.randomUUID().toString();
-    }
-
-    @PrePersist
-    public void generateHotelId() {
-        if (this.transportId == null) {
-            this.transportId = UUID.randomUUID().toString();
-        }
-    }
+    @ManyToOne
+    @JoinColumn(name = "logistics_id", insertable = false, updatable = false)
+    private Logistic logistics;
 }

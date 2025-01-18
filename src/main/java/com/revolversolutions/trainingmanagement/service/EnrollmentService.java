@@ -20,4 +20,6 @@ public interface EnrollmentService {
 
     EnrollmentDTO getEnrollmentByEnrollmentId(String enrollmentId);
 
+    long  getCountEnrollments();
+
 }

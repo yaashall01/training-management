@@ -2,6 +2,7 @@ package com.revolversolutions.trainingmanagement.controller;
 
 
 import com.revolversolutions.trainingmanagement.dto.EnrollmentDTO;
+import com.revolversolutions.trainingmanagement.dto.ImageMetadataDTO;
 import com.revolversolutions.trainingmanagement.dto.user.UserRequest;
 import com.revolversolutions.trainingmanagement.dto.user.UserResponse;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
@@ -33,6 +34,21 @@ public class UserController {
     @GetMapping()
     public ResponseEntity<Page<UserResponse>> gelAllUsers(Pageable pageable){
         return ResponseEntity.ok(userService.getAllUsers(pageable));
+    }
+
+    @GetMapping("/trainers")
+    public ResponseEntity<Page<UserResponse>> getAllTrainers(Pageable pageable){
+        return ResponseEntity.ok(userService.getAllTrainers(pageable));
+    }
+
+    @GetMapping("/admins")
+    public ResponseEntity<Page<UserResponse>> getAllAdmins(Pageable pageable){
+        return ResponseEntity.ok(userService.getAllAdmins(pageable));
+    }
+
+    @GetMapping("/trainees")
+    public ResponseEntity<Page<UserResponse>> getAllTrainees(Pageable pageable){
+        return ResponseEntity.ok(userService.getAllTrainees(pageable));
     }
 
     @GetMapping("/{userId}")
@@ -72,6 +88,20 @@ public class UserController {
 
     }
 
+    @PostMapping("/{userId}/profile-picture")
+    public ResponseEntity<ImageMetadataDTO> uploadProfilePicture(@PathVariable String userId,
+                                                                 @RequestParam("file") MultipartFile file) {
+        ImageMetadataDTO uploadedImage = userService.uploadProfilePicture(userId, file);
+
+        return ResponseEntity.ok(uploadedImage);
+    }
+
+    @GetMapping("/{userId}/profile-picture")
+    public ResponseEntity<ImageMetadataDTO> getProfilePicture(@PathVariable String userId) {
+        ImageMetadataDTO image = userService.getProfilePicture(userId);
+        return ResponseEntity.ok(image);
+    }
+
     @GetMapping("/{userId}/profile-image")
     public ResponseEntity<FileDB> getUserProfileImage(@PathVariable String userId) {
         try {
@@ -98,6 +128,10 @@ public class UserController {
         return ResponseEntity.ok(enrollmentDTO);
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<Long> gelCount(){
+        return ResponseEntity.ok(userService.getCountUsers());
+    }
 
     /*
     @PostMapping("/{userId}/profile-image")

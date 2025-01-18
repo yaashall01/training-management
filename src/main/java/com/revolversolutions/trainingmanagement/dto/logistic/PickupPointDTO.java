@@ -10,6 +10,11 @@ public class PickupPointDTO {
 
     private String pickupPointId;
 
+    private String name;
+
     private String location;
+
+    private String locationUrl;
+
 
 }

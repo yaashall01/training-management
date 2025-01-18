@@ -1,6 +1,7 @@
 package com.revolversolutions.trainingmanagement.controller;
 
 import com.revolversolutions.trainingmanagement.aspect.UserActivityLog;
+import com.revolversolutions.trainingmanagement.dto.ImageMetadataDTO;
 import com.revolversolutions.trainingmanagement.dto.ResponseTrainingProgramPage;
 import com.revolversolutions.trainingmanagement.dto.TrainingProgramDTO;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
@@ -14,6 +15,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -126,5 +128,23 @@ public class TrainingProgramController {
     public ResponseEntity<TrainingProgramDTO> assignTrainerToProgram(@PathVariable String programId, @PathVariable String trainerId){
         TrainingProgramDTO trainingProgram = trainingProgramService.assignTrainerToProgram(programId, trainerId);
         return ResponseEntity.ok(trainingProgram);
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<Long> gelCount(){
+        return ResponseEntity.ok(trainingProgramService.getCountPrograms());
+    }
+
+    @PostMapping(value ="/{programId}/gallery/multiple" , consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<List<ImageMetadataDTO>> uploadImages(
+            @PathVariable String programId ,
+            @RequestParam("files") List<MultipartFile> files) {
+        try {
+            List<ImageMetadataDTO> savedImages = trainingProgramService.uploadGalleryImages(programId , files);
+            return ResponseEntity.ok(savedImages);
+        }catch(IOException e){
+            throw new RuntimeException(e);
+        }
+
     }
 }

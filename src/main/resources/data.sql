@@ -104,7 +104,6 @@ INSERT INTO session (session_id, program_id, title, start_time, end_time, locati
                                                                                                      (UUID(), 20, 'Functional Training Morning', '2024-07-09 07:00:00', '2024-07-09 08:00:00', 'Functional Room 1', 'Start your day with functional training.');
 -- Insert Attendance
 
-
 INSERT INTO attendance (attendance_id, session_id, user_id, status, attended_at, updated_at) VALUES
                                                                                                  (UUID(), (SELECT id FROM session WHERE title='Morning Beginner Yoga'), (SELECT id FROM users WHERE email='john.doe@example.com'), 'PRESENT', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
                                                                                                  (UUID(), (SELECT id FROM session WHERE title='Evening Beginner Yoga'), (SELECT id FROM users WHERE email='john.doe@example.com'), 'PRESENT', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),

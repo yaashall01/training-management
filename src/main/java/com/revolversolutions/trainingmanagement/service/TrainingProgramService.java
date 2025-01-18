@@ -1,5 +1,6 @@
 package com.revolversolutions.trainingmanagement.service;
 
+import com.revolversolutions.trainingmanagement.dto.ImageMetadataDTO;
 import com.revolversolutions.trainingmanagement.dto.ResponseTrainingProgramPage;
 import com.revolversolutions.trainingmanagement.dto.TrainingProgramDTO;
 import com.revolversolutions.trainingmanagement.entity.FileDB;
@@ -33,4 +34,8 @@ public interface TrainingProgramService {
     TrainingProgramDTO removeLogisticsFromTrainingProgram(String trainingProgramId);
 
     TrainingProgramDTO assignTrainerToProgram(String programId, String trainerId);
+
+    long  getCountPrograms();
+
+    List<ImageMetadataDTO> uploadGalleryImages(String programId, List<MultipartFile> files) throws IOException;
 }

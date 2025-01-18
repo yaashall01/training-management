@@ -11,6 +11,8 @@ public class TransportDTO {
 
     private String type;
 
+    private String driver;
+
     private String details;
 
 }

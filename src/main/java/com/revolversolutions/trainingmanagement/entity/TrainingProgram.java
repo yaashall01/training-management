@@ -96,7 +96,7 @@ public class TrainingProgram {
     )
     @JoinColumn(
             name = "logistics_id",
-            referencedColumnName = "id"
+            referencedColumnName = "logisticsId"
     )
     private Logistic logistics;
 
@@ -105,6 +105,9 @@ public class TrainingProgram {
 
     @OneToMany
     private List<FileDB> programImages = new ArrayList<>();
+
+    @OneToMany
+    private List<ImageMetadata> gallery = new ArrayList<>();
 
     public TrainingProgram(){
         this.programId = UUID.randomUUID().toString();

@@ -2,6 +2,9 @@ package com.revolversolutions.trainingmanagement.controller;
 
 
 import com.revolversolutions.trainingmanagement.dto.LogisticDTO;
+import com.revolversolutions.trainingmanagement.mapper.HotelDTOMapper;
+import com.revolversolutions.trainingmanagement.mapper.PickupPointDTOMapper;
+import com.revolversolutions.trainingmanagement.mapper.TransportDTOMapper;
 import com.revolversolutions.trainingmanagement.service.LogisticService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +18,18 @@ import java.util.List;
 public class LogisticController {
 
     private final LogisticService logisticService;
-//    private final HotelDTOMapper hotelMapper;
-//    private final TransportDTOMapper transportMapper;
-//    private final PickupPointDTOMapper pickupPointMapper;
+    private final HotelDTOMapper hotelMapper;
+    private final TransportDTOMapper transportMapper;
+    private final PickupPointDTOMapper pickupPointMapper;
 
-    public LogisticController(LogisticService logisticService) {
+    public LogisticController(LogisticService logisticService ,
+                              HotelDTOMapper hotelMapper ,
+                              TransportDTOMapper transportMapper ,
+                              PickupPointDTOMapper pickupPointMapper) {
         this.logisticService = logisticService;
+        this.hotelMapper = hotelMapper;
+        this.transportMapper = transportMapper;
+        this.pickupPointMapper = pickupPointMapper;
     }
 
 
@@ -64,6 +73,7 @@ public class LogisticController {
             return ResponseEntity.notFound().build();
         }
     }
+
 
     /*
 

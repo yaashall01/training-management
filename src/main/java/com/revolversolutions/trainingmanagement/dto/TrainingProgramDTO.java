@@ -34,8 +34,9 @@ public class TrainingProgramDTO {
     private UserResponse trainer;
     private LocalDateTime createdAt;
     private ProgramType programType;
-    private List<ReviewDTO> reviews;
+//    private List<ReviewDTO> reviews;
     private List<FileDB> programImages;
-    private List<SessionDTO> sessions;
+    private List<ImageMetadataDTO> gallery;
+//    private List<SessionDTO> sessions;
     private LogisticDTO logistics;
 }

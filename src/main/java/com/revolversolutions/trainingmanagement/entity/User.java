@@ -76,6 +76,9 @@ public class User implements UserDetails, Serializable {
     @OneToOne
     private FileDB profileImage;
 
+    @OneToOne
+    private ImageMetadata imageMetadata;
+
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,
@@ -108,6 +111,14 @@ public class User implements UserDetails, Serializable {
             fetch = FetchType.LAZY
     )
     private List<Certificate> certificates = new ArrayList<>();
+
+    @OneToMany(
+            mappedBy = "user",
+            orphanRemoval = true,
+            cascade = CascadeType.ALL
+    )
+    private List<Review> reviews;
+
 
     public User(){
         this.userId = UUID.randomUUID().toString();
