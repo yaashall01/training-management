@@ -46,9 +46,13 @@ public interface UserService{
 
     FileDB getUserProfileImage(String userId);
 
-    void uploadUserProfileImage(String userId, MultipartFile file) throws IOException;
+    void uploadUserProfileImage(String userId, MultipartFile file) throws IOException;    EnrollmentDTO enrollProgram(String userId, String programId);
 
-    EnrollmentDTO enrollProgram(String userId, String programId);
+    EnrollmentDTO enrollProgramWithFiles(String userId, String programId, String paymentType, 
+                                        MultipartFile paymentProofFile, MultipartFile prerequisiteProofFile,
+                                        String firstName, String lastName, String phone, 
+                                        String city, String country, String state, 
+                                        String street, String zipCode, String notes);
 
     long  getCountUsers();
 

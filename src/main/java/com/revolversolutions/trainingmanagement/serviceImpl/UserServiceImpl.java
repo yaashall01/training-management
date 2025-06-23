@@ -6,6 +6,7 @@ import com.revolversolutions.trainingmanagement.dto.user.UserRequest;
 import com.revolversolutions.trainingmanagement.dto.user.UserResponse;
 import com.revolversolutions.trainingmanagement.entity.*;
 import com.revolversolutions.trainingmanagement.enums.EnrolmentStatus;
+import com.revolversolutions.trainingmanagement.enums.PaymentType;
 import com.revolversolutions.trainingmanagement.enums.UserRole;
 import com.revolversolutions.trainingmanagement.exception.AlreadyEnrolledException;
 import com.revolversolutions.trainingmanagement.exception.FileStorageException;
@@ -280,6 +281,131 @@ public class UserServiceImpl implements UserService, UserDetailsService  {
             emailService.sendEmail(user.getEmail(), subject, templatePath, variables);
         } catch (MessagingException | IOException e) {
             throw new RuntimeException(e);
+        }        return enrollmentDTOMapper.toDto(savedEnrollment);
+    }
+
+    @Override
+    public EnrollmentDTO enrollProgramWithFiles(String userId, String programId, String paymentType, 
+                                               MultipartFile paymentProofFile, MultipartFile prerequisiteProofFile,
+                                               String firstName, String lastName, String phone, 
+                                               String city, String country, String state, 
+                                               String street, String zipCode, String notes) {
+        // Find user and program
+        User user = userRepository.findUserByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        TrainingProgram program = trainingProgramRepository.findByProgramId(programId)
+                .orElseThrow(() -> new ResourceNotFoundException("Program not found"));
+
+        // Check if already enrolled
+        EnrollmentId enrollmentId = new EnrollmentId(user.getId(), program.getId());
+        if (enrollmentRepository.existsById(enrollmentId)) {
+            throw new AlreadyEnrolledException("User is already enrolled in this program");
+        }
+
+        // Update user information if provided
+        if (firstName != null && !firstName.trim().isEmpty()) {
+            user.setFirstName(firstName.trim());
+        }
+        if (lastName != null && !lastName.trim().isEmpty()) {
+            user.setLastName(lastName.trim());
+        }
+        if (phone != null && !phone.trim().isEmpty()) {
+            user.setPhone(phone.trim());
+        }
+        if (city != null && !city.trim().isEmpty()) {
+            user.getAddress().setCity(city.trim());
+        }
+        if (country != null && !country.trim().isEmpty()) {
+            user.getAddress().setCountry(country.trim());
+        }
+        if (state != null && !state.trim().isEmpty()) {
+            user.getAddress().setState(state.trim());
+        }
+        if (street != null && !street.trim().isEmpty()) {
+            user.getAddress().setStreet(street.trim());
+        }
+        if (zipCode != null && !zipCode.trim().isEmpty()) {
+            user.getAddress().setZipCode(zipCode.trim());
+        }
+
+        // Save updated user info
+        userRepository.save(user);
+
+        // Handle file uploads
+        FileDB paymentProofFileDB = null;
+        FileDB prerequisiteProofFileDB = null;
+
+        try {
+            if (paymentProofFile != null && !paymentProofFile.isEmpty()) {
+                paymentProofFileDB = storageService.store(paymentProofFile);
+            }
+
+            if (prerequisiteProofFile != null && !prerequisiteProofFile.isEmpty()) {
+                prerequisiteProofFileDB = storageService.store(prerequisiteProofFile);
+            }
+        } catch (IOException e) {
+            throw new FileStorageException("Failed to store uploaded files", e);
+        }
+
+        // Parse payment type
+        PaymentType paymentTypeEnum;
+        try {
+            paymentTypeEnum = PaymentType.fromValue(paymentType);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid payment type: " + paymentType);
+        }
+
+        // Determine if prerequisite is required
+        boolean prerequisiteRequired = program.getPrerequisiteLevel() != null;
+
+        // Create enrollment
+        Enrollment enrollment = Enrollment.builder()
+                .id(enrollmentId)
+                .user(user)
+                .program(program)
+                .paymentType(paymentTypeEnum)
+                .paymentProofFile(paymentProofFileDB)
+                .prerequisiteProofFile(prerequisiteProofFileDB)
+                .prerequisiteRequired(prerequisiteRequired)
+                .status(EnrolmentStatus.PENDING)
+                .build();
+
+        // Determine initial status based on requirements
+        if (prerequisiteRequired && prerequisiteProofFileDB == null) {
+            enrollment.setStatus(EnrolmentStatus.PREREQUISITE_REVIEW);
+        } else if (paymentTypeEnum == PaymentType.VERMENT && paymentProofFileDB == null) {
+            enrollment.setStatus(EnrolmentStatus.PAYMENT_REVIEW);
+        } else if (prerequisiteRequired || paymentTypeEnum == PaymentType.VERMENT) {
+            enrollment.setStatus(EnrolmentStatus.PENDING); // Waiting for admin approval
+        } else {
+            enrollment.setStatus(EnrolmentStatus.ENROLLED); // Auto-approved
+        }
+
+        Enrollment savedEnrollment = enrollmentRepository.save(enrollment);
+        log.info("User enrolled successfully to program: {} with status: {}", 
+                program.getTitle(), savedEnrollment.getStatus());
+
+        // Send enrollment email
+        String templatePath = "templates/emailTemplate.html";
+        String subject = "Enrollment Submitted for " + program.getTitle();
+        String message = "Your enrollment has been submitted and is under review.";
+        
+        if (savedEnrollment.getStatus() == EnrolmentStatus.ENROLLED) {
+            message = "Congratulations! You are now enrolled in " + program.getTitle();
+        }
+
+        Map<String, String> variables = Map.of(
+                "subject", subject,
+                "name", user.getFirstName() + " " + user.getLastName(),
+                "message", message
+        );
+
+        try {
+            emailService.sendEmail(user.getEmail(), subject, templatePath, variables);
+        } catch (MessagingException | IOException e) {
+            log.error("Failed to send enrollment email", e);
+            // Don't throw exception for email failure
         }
 
         return enrollmentDTOMapper.toDto(savedEnrollment);

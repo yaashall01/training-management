@@ -14,7 +14,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Entity(name = "User")
 @Table(name = "users")
-public class User implements UserDetails, Serializable {
+public class User implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -87,14 +86,13 @@ public class User implements UserDetails, Serializable {
     private transient List<Token> tokens;
 
     @OneToOne(mappedBy = "user")
-    private ForgotPassword forgotPassword;
-
-    @OneToMany(
+    private ForgotPassword forgotPassword;    @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.EAGER
     )
+    @Builder.Default
     private transient List<Enrollment> enrollments = new ArrayList<>();
 
     @OneToMany(
@@ -102,6 +100,7 @@ public class User implements UserDetails, Serializable {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @Builder.Default
     private transient List<Attendance> sessions = new ArrayList<>();
 
 
@@ -110,6 +109,7 @@ public class User implements UserDetails, Serializable {
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )
+    @Builder.Default
     private List<Certificate> certificates = new ArrayList<>();
 
     @OneToMany(
@@ -127,11 +127,14 @@ public class User implements UserDetails, Serializable {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(userRole.name()));
+    }    @Override
+    public String getUsername() {
+        return this.userName;
     }
 
     @Override
-    public String getUsername() {
-        return this.userName;
+    public String getPassword() {
+        return this.password;
     }
 
     public String getUserName() {

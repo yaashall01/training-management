@@ -26,4 +26,9 @@ public class ImageMetadata {
         this.uploadTimestamp = LocalDateTime.now();
     }
 
+    // Explicit getter method to ensure availability
+    public String getDeleteHash() {
+        return deleteHash;
+    }
+
 }

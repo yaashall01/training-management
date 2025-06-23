@@ -2,6 +2,7 @@ package com.revolversolutions.trainingmanagement.entity;
 
 
 import com.revolversolutions.trainingmanagement.enums.EnrolmentStatus;
+import com.revolversolutions.trainingmanagement.enums.PaymentType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -64,12 +65,40 @@ public class Enrollment {
     @UpdateTimestamp
     private LocalDateTime lastUpdateOn;
 
-    private boolean completed;
-
-    private String updatedBy;
+    private boolean completed;    private String updatedBy;
 
     @Enumerated(EnumType.STRING)
-    private EnrolmentStatus status = EnrolmentStatus.ENROLLED;
+    @Builder.Default
+    private EnrolmentStatus status = EnrolmentStatus.PENDING;
+
+    // New fields for enhanced enrollment process
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private PaymentType paymentType = PaymentType.CASH;
+
+    @OneToOne
+    @JoinColumn(name = "payment_proof_file_id")
+    private FileDB paymentProofFile;
+
+    @OneToOne
+    @JoinColumn(name = "prerequisite_proof_file_id")
+    private FileDB prerequisiteProofFile;
+
+    @Builder.Default
+    private Boolean prerequisiteRequired = false;
+
+    @Builder.Default
+    private Boolean prerequisiteApproved = false;
+
+    @Builder.Default
+    private Boolean paymentApproved = false;
+
+    @Column(columnDefinition = "TEXT")
+    private String adminNotes;
+
+    private LocalDateTime prerequisiteApprovedAt;
+
+    private LocalDateTime paymentApprovedAt;
 
     @PrePersist
     protected void onCreate() {
@@ -77,8 +106,6 @@ public class Enrollment {
             enrollmentId = UUID.randomUUID().toString();
         }
     }
-
-
     public void completedOn(){
         this.completedOn = LocalDateTime.now();
         this.status = EnrolmentStatus.COMPLETED;
@@ -88,6 +115,51 @@ public class Enrollment {
     public void cancel(){
         this.status = EnrolmentStatus.CANCELLED;
         this.cancelledOn = LocalDateTime.now();
+    }
+
+    public void approvePrerequisite(String adminNotes) {
+        this.prerequisiteApproved = true;
+        this.prerequisiteApprovedAt = LocalDateTime.now();
+        this.adminNotes = adminNotes;
+        updateStatusAfterApproval();
+    }
+
+    public void approvePayment(String adminNotes) {
+        this.paymentApproved = true;
+        this.paymentApprovedAt = LocalDateTime.now();
+        this.adminNotes = adminNotes;
+        updateStatusAfterApproval();
+    }
+
+    public void reject(String reason) {
+        this.status = EnrolmentStatus.REJECTED;
+        this.adminNotes = reason;
+        this.lastUpdateOn = LocalDateTime.now();
+    }
+
+    private void updateStatusAfterApproval() {
+        // If prerequisite is required and not approved, status should be PREREQUISITE_REVIEW
+        if (prerequisiteRequired && !prerequisiteApproved) {
+            this.status = EnrolmentStatus.PREREQUISITE_REVIEW;
+            return;
+        }
+        
+        // If payment type is VERMENT and not approved, status should be PAYMENT_REVIEW
+        if (paymentType == PaymentType.VERMENT && !paymentApproved) {
+            this.status = EnrolmentStatus.PAYMENT_REVIEW;
+            return;
+        }
+        
+        // If all required approvals are done, status should be ENROLLED
+        if ((!prerequisiteRequired || prerequisiteApproved) && 
+            (paymentType == PaymentType.CASH || paymentType == PaymentType.ONLINE || paymentApproved)) {
+            this.status = EnrolmentStatus.ENROLLED;
+        }
+    }
+
+    public boolean isReadyForEnrollment() {
+        return (!prerequisiteRequired || prerequisiteApproved) && 
+               (paymentType == PaymentType.CASH || paymentType == PaymentType.ONLINE || paymentApproved);
     }
 
 

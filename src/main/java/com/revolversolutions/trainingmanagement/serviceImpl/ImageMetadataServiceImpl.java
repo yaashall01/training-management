@@ -6,25 +6,23 @@ import com.revolversolutions.trainingmanagement.exception.ResourceNotFoundExcept
 import com.revolversolutions.trainingmanagement.mapper.ImageMetadataDTOMapper;
 import com.revolversolutions.trainingmanagement.repository.ImageMetadataRepository;
 import com.revolversolutions.trainingmanagement.service.ImageMetadataService;
+import com.revolversolutions.trainingmanagement.service.ImgurService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @Slf4j
-public class ImageMetadataServiceImpl implements ImageMetadataService {
-
-    private final ImageMetadataDTOMapper imageMetadataDTOMapper;
+public class ImageMetadataServiceImpl implements ImageMetadataService {    private final ImageMetadataDTOMapper imageMetadataDTOMapper;
     private final ImageMetadataRepository imageMetadataRepository;
-    private final ImgurServiceImpl imgurService;
+    private final ImgurService imgurService;
 
     public ImageMetadataServiceImpl(
             ImageMetadataDTOMapper imageMetadataDTOMapper,
-            ImageMetadataRepository imageMetadataRepository, ImgurServiceImpl imgurService) {
+            ImageMetadataRepository imageMetadataRepository, ImgurService imgurService) {
         this.imageMetadataDTOMapper = imageMetadataDTOMapper;
         this.imageMetadataRepository = imageMetadataRepository;
         this.imgurService = imgurService;

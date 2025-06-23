@@ -120,12 +120,31 @@ public class UserController {
         User currentUser = (User) authentication.getPrincipal();
         UserResponse userResponse = userService.getUserById(currentUser.getUserId());
         return ResponseEntity.ok(userResponse);
-    }
-
-    @PostMapping("/{userId}/programs/{programId}/enroll")
-    public ResponseEntity<EnrollmentDTO> enrollProgram(@PathVariable String userId, @PathVariable String programId) {
-        EnrollmentDTO enrollmentDTO = userService.enrollProgram(userId, programId);
-        return ResponseEntity.ok(enrollmentDTO);
+    }    @PostMapping("/{userId}/programs/{programId}/enroll")
+    public ResponseEntity<EnrollmentDTO> enrollProgram(
+            @PathVariable String userId, 
+            @PathVariable String programId,
+            @RequestParam("paymentType") String paymentType,
+            @RequestParam(value = "paymentProofFile", required = false) MultipartFile paymentProofFile,
+            @RequestParam(value = "prerequisiteProofFile", required = false) MultipartFile prerequisiteProofFile,
+            @RequestParam(value = "firstName", required = false) String firstName,
+            @RequestParam(value = "lastName", required = false) String lastName,
+            @RequestParam(value = "phone", required = false) String phone,
+            @RequestParam(value = "city", required = false) String city,
+            @RequestParam(value = "country", required = false) String country,
+            @RequestParam(value = "state", required = false) String state,
+            @RequestParam(value = "street", required = false) String street,
+            @RequestParam(value = "zipCode", required = false) String zipCode,
+            @RequestParam(value = "notes", required = false) String notes) {
+        
+        try {
+            EnrollmentDTO enrollmentDTO = userService.enrollProgramWithFiles(
+                userId, programId, paymentType, paymentProofFile, prerequisiteProofFile,
+                firstName, lastName, phone, city, country, state, street, zipCode, notes);
+            return ResponseEntity.ok(enrollmentDTO);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to process enrollment: " + e.getMessage(), e);
+        }
     }
 
     @GetMapping("/count")
